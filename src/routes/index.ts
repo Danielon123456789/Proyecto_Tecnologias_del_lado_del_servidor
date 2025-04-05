@@ -5,22 +5,66 @@ import { verCarrito, agregarAlCarrito, eliminarDelCarrito, comprar, historialCom
 import { getUsuarios, eliminarUsuario, getProductosReportados, eliminarProductoAdmin } from '../controllers/Admin';
 import { checkout, confirmarPago, historialPagos } from '../controllers/Pagos';
 import { authenticateToken } from '../middlewares/auth';
-import { role } from '../middlewares/role';
-import {Roles} from '../types/roles'
+import { isAdmin } from '../middlewares/isadmin';
+
 
 const router = Router();
 
-// Autenticación y Usuarios
-router.post('/auth/register', register);
-router.post('/auth/login', login);
+
+
+
+/**
+ * @swagger
+ * /register:
+ *   post:
+ *     description: Registra un nuevo usuario en el sistema.
+ *     tags:
+ *       - Usuarios
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *                 example: "Juan Pérez"
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: "juan.perez@example.com"
+ *               contrasena:
+ *                 type: string
+ *                 format: password
+ *                 example: "Password123"
+ *             required:
+ *               - nombre
+ *               - email
+ *               - contrasena
+ *     responses:
+ *       201:
+ *         description: Usuario registrado correctamente
+ *       400:
+ *         description: El usuario ya está registrado
+ *       500:
+ *         description: Error en el servidor
+ */
+router.post('/register', register);
+
+
+router.post('/login', login);
 router.post('/auth/logout', authenticateToken, logout);
-router.get('/auth/perfil', authenticateToken, perfil);
+router.get('/perfil', authenticateToken, perfil);
 router.patch('/auth/perfil', authenticateToken, perfil); // Actualizar perfil
 router.delete('/auth/eliminar-cuenta', authenticateToken, perfil); // Eliminar cuenta
 
 // Gestión de Productos
+
 router.get('/productos', getProductos);
+
 router.get('/productos/:id', getProducto);
+
 router.post('/productos', authenticateToken, crearProducto);
 router.patch('/productos/:id', authenticateToken, editarProducto);
 router.delete('/productos/:id', authenticateToken, eliminarProducto);
@@ -35,10 +79,10 @@ router.post('/comprar', authenticateToken, comprar);
 router.get('/compras/historial', authenticateToken, historialCompras);
 
 // Administración (Admin)
-router.get('/admin/usuarios',  role([Roles.ADMIN]), getUsuarios);
-router.delete('/admin/usuarios/:id',  role([Roles.ADMIN]), eliminarUsuario);
-router.get('/admin/productos-reportados',  role([Roles.ADMIN]), getProductosReportados);
-router.delete('/admin/productos/:id',  role([Roles.ADMIN]), eliminarProductoAdmin);
+router.get('/admin/usuarios', authenticateToken, isAdmin, getUsuarios);
+router.delete('/admin/usuarios/:id', authenticateToken, isAdmin, eliminarUsuario);
+router.get('/admin/productos-reportados', authenticateToken, isAdmin, getProductosReportados);
+router.delete('/admin/productos/:id', authenticateToken, isAdmin, eliminarProductoAdmin);
 
 // Pagos (Stripe y Shopify API)
 router.post('/pagos/checkout', authenticateToken, checkout);
