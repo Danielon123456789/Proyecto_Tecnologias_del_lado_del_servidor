@@ -1,40 +1,32 @@
-
-import express from 'express'
-import {config} from 'dotenv'
-config();
-
+import express from 'express';
+import { config } from 'dotenv';
 import connectDB from './config/database';
-
 import swaggerJsDoc from 'swagger-jsdoc';
-import {serve, setup} from 'swagger-ui-express';
-import { swaggerConfig} from './../swagger.config';
-
+import { serve, setup } from 'swagger-ui-express';
+import { swaggerConfig } from '../swagger.config';
 import routes from './routes/index';
 
-const port = process.env.PORT || 5000
+config();
 
 const app = express();
+const port = process.env.PORT || 5000;
 
+// Middlewares
 app.use(express.json());
 
-app.get('',(req,res) =>{
-    res.send("api work")
-})
+// Rutas
+app.use('/', routes);
 
-app.use('',routes);
-
-// Swagger
-
+// Documentación Swagger
 const swaggerDocs = swaggerJsDoc(swaggerConfig);
+app.use('/swagger', serve, setup(swaggerDocs));
 
-app.use('/swagger', serve , setup(swaggerDocs));
-
-connectDB().then(()=>{
-    app.listen(port,()=>{
-        console.log(`app is running in port ${port}`);
-    })
-}).catch((error)=>{
-    console.log('No se pudo conectar a la base de datos MongoDB',error);
-    process.exit(1);
-})
-
+// Conexión a la base de datos y arranque
+connectDB().then(() => {
+  app.listen(port, () => {
+    console.log(`Servidor corriendo en el puerto ${port}`);
+  });
+}).catch((error) => {
+  console.error('Error al conectar con MongoDB:', error);
+  process.exit(1);
+});
