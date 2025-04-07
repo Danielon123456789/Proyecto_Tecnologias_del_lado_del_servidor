@@ -71,36 +71,6 @@ router.get('/', authenticateToken, isAdmin, getReportes);
 
 /**
  * @swagger
- * /reportes/{id}:
- *   get:
- *     description: Obtiene un reporte específico por su ID (solo admin).
- *     tags:
- *       - Reportes
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID del reporte
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Detalles del reporte
- *       401:
- *         description: No autorizado
- *       403:
- *         description: Acceso denegado
- *       404:
- *         description: Reporte no encontrado
- *       500:
- *         description: Error en el servidor
- */
-router.get('/:id', authenticateToken, isAdmin, getReporte);
-
-/**
- * @swagger
  * /reportes/{id}/resolver:
  *   patch:
  *     description: Marca un reporte como resuelto (solo admin).
@@ -128,6 +98,36 @@ router.get('/:id', authenticateToken, isAdmin, getReporte);
  *         description: Error al resolver el reporte
  */
 router.patch('/:id/resolver', authenticateToken, isAdmin, resolverReporte);
+
+/**
+ * @swagger
+ * /reportes/{id}:
+ *   get:
+ *     description: Obtiene un reporte específico por su ID (solo admin).
+ *     tags:
+ *       - Reportes
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID del reporte
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Detalles del reporte
+ *       401:
+ *         description: No autorizado
+ *       403:
+ *         description: Acceso denegado
+ *       404:
+ *         description: Reporte no encontrado
+ *       500:
+ *         description: Error en el servidor
+ */
+router.get('/:id', authenticateToken, isAdmin, getReporte);
 
 /**
  * @swagger

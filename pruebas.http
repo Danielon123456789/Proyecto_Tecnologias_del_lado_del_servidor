@@ -1,26 +1,22 @@
-### registro
-
-POST http://localhost:3000/register
+### Registro
+POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-    "nombre": "juan y Nacho Hernández",
-    "email": "H_juan123456@hotmail.com",
-    "contrasena": "12234567"
+  "nombre": "eduardo valenzuela",
+  "email": "valenzuela@hotmail.com",
+  "contrasena": "654321"
 }
 
-### login
-
-POST http://localhost:3000/login
+### Login
+POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-    "email": "H_juan123456@hotmail.com",
-    "contrasena": "12234567"
+  "email": "H_juan123456@hotmail.com",
+  "contrasena": "12234567"
 }
 
-
-### perfil
-
-GET http://localhost:3000/perfil
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZjE5OWEyYWRkZWRmMjA4Mjk1NjBlOSIsImVtYWlsIjoiSF9qdWFuMTIzNDU2QGhvdG1haWwuY29tIiwicm9sIjoidXN1YXJpbyIsImlhdCI6MTc0Mzg4Njc5NCwiZXhwIjoxNzQzODkwMzk0fQ.0boz5X0XbfYj6UtNqMJrSmAiI0KTPezeATsyaGh7kCw
+### Perfil
+GET http://localhost:3000/auth/perfil
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZjE5OWEyYWRkZWRmMjA4Mjk1NjBlOSIsImVtYWlsIjoiSF9qdWFuMTIzNDU2QGhvdG1haWwuY29tIiwicm9sIjoidXN1YXJpbyIsImlhdCI6MTc0Mzk5MDc5NiwiZXhwIjoxNzQzOTk0Mzk2fQ.TwSrLnnfeaewLeI1pQCImf09tMDdnkMoID5dmP9TOSY

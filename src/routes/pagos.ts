@@ -54,34 +54,6 @@ router.post('/checkout', authenticateToken, checkout);
 
 /**
  * @swagger
- * /pagos/confirmar/{id}:
- *   get:
- *     description: Confirma un pago ya procesado por un proveedor externo.
- *     tags:
- *       - Pagos
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID del pago a confirmar
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Pago confirmado y orden actualizada
- *       401:
- *         description: No autorizado
- *       404:
- *         description: Pago no encontrado
- *       500:
- *         description: Error al confirmar pago
- */
-router.get('/confirmar/:id', authenticateToken, confirmarPago);
-
-/**
- * @swagger
  * /pagos/historial:
  *   get:
  *     description: Obtiene el historial de pagos del usuario autenticado.
@@ -114,6 +86,34 @@ router.get('/confirmar/:id', authenticateToken, confirmarPago);
  *         description: Error al obtener historial
  */
 router.get('/historial', authenticateToken, historialPagos);
+
+/**
+ * @swagger
+ * /pagos/confirmar/{id}:
+ *   get:
+ *     description: Confirma un pago ya procesado por un proveedor externo.
+ *     tags:
+ *       - Pagos
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID del pago a confirmar
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Pago confirmado y orden actualizada
+ *       401:
+ *         description: No autorizado
+ *       404:
+ *         description: Pago no encontrado
+ *       500:
+ *         description: Error al confirmar pago
+ */
+router.get('/confirmar/:id', authenticateToken, confirmarPago);
 
 /**
  * @swagger

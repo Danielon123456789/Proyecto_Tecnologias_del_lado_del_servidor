@@ -18,8 +18,15 @@ export const verCarrito = async (req: IGetUserAuthInfoRequest, res: Response): P
     }
 
     const total = carrito.productos.reduce((acc: number, item: any) => {
-      const precio = item.producto?.precio ?? 0;
-      return acc + precio * item.cantidad;
+      if (
+        typeof item.producto === 'object' &&
+        item.producto !== null &&
+        'precio' in item.producto
+      ) {
+        const producto = item.producto as unknown as { precio: number };
+        return acc + producto.precio * item.cantidad;
+      }
+      return acc;
     }, 0);
 
     res.json({ productos: carrito.productos, total });
@@ -94,8 +101,16 @@ export const comprar = async (req: IGetUserAuthInfoRequest, res: Response): Prom
     }
 
     let total = 0;
+
     for (const item of carrito.productos) {
-      total += item.producto.precio * item.cantidad;
+      if (
+        typeof item.producto === 'object' &&
+        item.producto !== null &&
+        'precio' in item.producto
+      ) {
+        const producto = item.producto as unknown as { precio: number };
+        total += producto.precio * item.cantidad;
+      }
     }
 
     const orden = new Orden({
@@ -109,14 +124,22 @@ export const comprar = async (req: IGetUserAuthInfoRequest, res: Response): Prom
     const ordenGuardada = await orden.save();
 
     for (const item of carrito.productos) {
-      const detalle = new DetalleOrden({
-        orden_id: ordenGuardada._id,
-        producto_id: item.producto._id,
-        cantidad: item.cantidad,
-        precio_unitario: item.producto.precio,
-      });
+      if (
+        typeof item.producto === 'object' &&
+        item.producto !== null &&
+        'precio' in item.producto &&
+        '_id' in item.producto
+      ) {
+        const producto = item.producto as unknown as { _id: string; precio: number };
+        const detalle = new DetalleOrden({
+          orden_id: ordenGuardada._id,
+          producto_id: producto._id,
+          cantidad: item.cantidad,
+          precio_unitario: producto.precio,
+        });
 
-      await detalle.save();
+        await detalle.save();
+      }
     }
 
     carrito.productos = [];

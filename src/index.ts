@@ -1,12 +1,9 @@
 import express from 'express';
-import { config } from 'dotenv';
 import connectDB from './config/database';
 import swaggerJsDoc from 'swagger-jsdoc';
 import { serve, setup } from 'swagger-ui-express';
 import { swaggerConfig } from '../swagger.config';
 import routes from './routes/index';
-
-config();
 
 const app = express();
 const port = process.env.PORT || 5000;

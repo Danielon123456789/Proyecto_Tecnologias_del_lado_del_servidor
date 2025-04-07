@@ -29,6 +29,62 @@ router.get('/', getProductos);
 
 /**
  * @swagger
+ * /productos/busqueda:
+ *   get:
+ *     description: Busca productos por texto, precio o categoría.
+ *     tags:
+ *       - Productos
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: min
+ *         schema:
+ *           type: number
+ *       - in: query
+ *         name: max
+ *         schema:
+ *           type: number
+ *       - in: query
+ *         name: categoria
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Productos encontrados
+ *       400:
+ *         description: Parámetros inválidos
+ *       500:
+ *         description: Error en el servidor
+ */
+router.get('/busqueda', buscarProductos);
+
+/**
+ * @swagger
+ * /productos/categoria/{categoria}:
+ *   get:
+ *     description: Obtiene productos filtrados por categoría.
+ *     tags:
+ *       - Productos
+ *     parameters:
+ *       - name: categoria
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID o nombre de categoría
+ *     responses:
+ *       200:
+ *         description: Productos encontrados
+ *       404:
+ *         description: No se encontraron productos
+ */
+router.get('/categoria/:categoria', productosPorCategoria);
+
+/**
+ * @swagger
  * /productos/{id}:
  *   get:
  *     description: Obtiene un producto específico por su ID.
@@ -157,61 +213,5 @@ router.patch('/:id', authenticateToken, editarProducto);
  *         description: Producto no encontrado
  */
 router.delete('/:id', authenticateToken, eliminarProducto);
-
-/**
- * @swagger
- * /productos/categoria/{categoria}:
- *   get:
- *     description: Obtiene productos filtrados por categoría.
- *     tags:
- *       - Productos
- *     parameters:
- *       - name: categoria
- *         in: path
- *         required: true
- *         schema:
- *           type: string
- *         description: ID o nombre de categoría
- *     responses:
- *       200:
- *         description: Productos encontrados
- *       404:
- *         description: No se encontraron productos
- */
-router.get('/categoria/:categoria', productosPorCategoria);
-
-/**
- * @swagger
- * /productos/busqueda:
- *   get:
- *     description: Busca productos por texto, precio o categoría.
- *     tags:
- *       - Productos
- *     parameters:
- *       - in: query
- *         name: q
- *         schema:
- *           type: string
- *       - in: query
- *         name: min
- *         schema:
- *           type: number
- *       - in: query
- *         name: max
- *         schema:
- *           type: number
- *       - in: query
- *         name: categoria
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Productos encontrados
- *       400:
- *         description: Parámetros inválidos
- *       500:
- *         description: Error en el servidor
- */
-router.get('/busqueda', buscarProductos);
 
 export default router;

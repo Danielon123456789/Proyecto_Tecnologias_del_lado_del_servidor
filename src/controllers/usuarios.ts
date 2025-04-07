@@ -31,7 +31,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 // Registro
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { nombre, email, contrasena } = req.body;
+    const { nombre, email, contrasena, rol } = req.body;
 
     const userExists = await usermodel.findOne({ email });
     if (userExists) {
@@ -39,7 +39,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const newUser = new usermodel({ nombre, email, contrasena });
+    const newUser = new usermodel({ nombre, email, contrasena, rol: rol || 'usuario' });
     await newUser.save();
 
     res.status(HttpStatus.CREATED).json({ message: 'Usuario registrado correctamente' });
