@@ -9,7 +9,7 @@ const ProductoSchema = new mongoose.Schema({
   stock: { type: Number, default: 0 },
   fecha_publicacion: { type: Date, default: Date.now },
   estado: { type: String, enum: ['activo', 'inactivo'], default: 'activo' },
-  imagenes: [String],
+  imageUrl: { type: String, default: '' }
 });
 
 const productoModel = mongoose.model('productos', ProductoSchema);
