@@ -1,3 +1,5 @@
+import productoModel from '../models/Producto';
+import { io } from '../index'; 
 import { Response } from 'express';
 import Pago from '../models/Pago';
 import Orden from '../models/Orden';
@@ -40,6 +42,7 @@ export async function confirmarPago(req: IGetUserAuthInfoRequest, res: Response)
     const { id } = req.params;
 
     const pago = await Pago.findById(id);
+    
     if (!pago) {
       res.status(HttpStatus.NOT_FOUND).json({ message: 'Pago no encontrado' });
       return;
@@ -47,13 +50,36 @@ export async function confirmarPago(req: IGetUserAuthInfoRequest, res: Response)
 
     pago.estado = 'completado';
     pago.fecha_pago = new Date();
-
     await pago.save();
+
+    const orden = await Orden.findById(pago.orden_id);
+
+    if (!orden) {
+      res.status(HttpStatus.NOT_FOUND).json({ message: 'Orden no encontrada' });
+      return;
+    }
+
+    //const productoComprado = await productoModel.findById(orden.producto_id);
+
+   // if (productoComprado) {
+   //   const vendedorId = productoComprado.usuario_id.toString();
+
+  //    io.emit(`nueva-compra-${vendedorId}`, {
+  //      mensaje: '¡Un usuario ha comprado tu producto!',
+  //      producto: {
+  //        id: productoComprado._id,
+  //        titulo: productoComprado.titulo,
+  //        precio: productoComprado.precio,
+ //       },
+ //       compradorId: pago.usuario_id,
+ //     });
+//    }
 
     await Orden.findByIdAndUpdate(pago.orden_id, { estado: 'pagado' });
 
     res.json({ message: 'Pago confirmado', pago });
   } catch (error) {
+    console.error('Error al confirmar pago:', error);
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error al confirmar pago', error });
   }
 }

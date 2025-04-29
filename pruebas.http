@@ -3,9 +3,9 @@ POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-  "nombre": "eduardo valenzuela",
-  "email": "valenzuela@hotmail.com",
-  "contrasena": "654321"
+  "nombre": "Danie Manuelito",
+  "email": "H_gdanielpatron@hotmail.com",
+  "contrasena": "64321"
 }
 
 ### Login
@@ -13,10 +13,10 @@ POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-  "email": "H_juan123456@hotmail.com",
-  "contrasena": "12234567"
+  "email": "valenzuela@hotmail.com",
+  "contrasena": "654321"
 }
 
 ### Perfil
 GET http://localhost:3000/auth/perfil
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZjE5OWEyYWRkZWRmMjA4Mjk1NjBlOSIsImVtYWlsIjoiSF9qdWFuMTIzNDU2QGhvdG1haWwuY29tIiwicm9sIjoidXN1YXJpbyIsImlhdCI6MTc0Mzk5MDc5NiwiZXhwIjoxNzQzOTk0Mzk2fQ.TwSrLnnfeaewLeI1pQCImf09tMDdnkMoID5dmP9TOSY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MGZlYjZjYTU1NTIzNzliZDQ5M2ExYyIsImVtYWlsIjoidmFsZW56dWVsYUBob3RtYWlsLmNvbSIsInJvbCI6InVzdWFyaW8iLCJpYXQiOjE3NDU4NzM4MTYsImV4cCI6MTc0NTg3NzQxNn0.o_A5a6lQyXQlnOCG0FBm13ihhcd9bzFOSePadPeLqjc
