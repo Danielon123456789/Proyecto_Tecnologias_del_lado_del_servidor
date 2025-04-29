@@ -6,6 +6,7 @@ const UserSchema = new mongoose.Schema({
     email: { type: String, required:true, unique: true},
     contrasena: { type: String, required: true},
     rol: {type: String, default: 'usuario'},
+    profilePictureUrl: { type: String, default: '' }
 })
 
 const usermodel = mongoose.model("users", UserSchema);

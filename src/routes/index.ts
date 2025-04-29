@@ -10,6 +10,7 @@ import pagoRoutes from './pagos';
 import reporteRoutes from './reportes';
 import carritoRoutes from './carrito';
 import adminRoutes from './admin';
+import fileRoutes from './fileRoutes';
 
 const router = Router();
 
@@ -23,5 +24,6 @@ router.use('/pagos', pagoRoutes);
 router.use('/reportes', reporteRoutes);
 router.use('/carrito', carritoRoutes);
 router.use('/admin', adminRoutes);
+router.use('/files', fileRoutes);
 
 export default router;
