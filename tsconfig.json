@@ -1,15 +1,13 @@
 {
-
-    "include" : ["src/**/*.ts"],
-    "compilerOptions": {
-        "noImplicitAny": true,
-        "strict": true,
-        "target": "ES2022",
-        "moduleResolution": "nodenext",
-        "module": "NodeNext",
-        "esModuleInterop": true,
-        "outDir": "dist"
-    }
-
-
+  "include": ["src/**/*.ts", "tests/**/*.ts"],
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "strict": true,
+    "target": "ES2022",
+    "moduleResolution": "nodenext",
+    "module": "NodeNext",
+    "esModuleInterop": true,
+    "outDir": "dist",
+    "types": ["jest", "node"]
+  }
 }
