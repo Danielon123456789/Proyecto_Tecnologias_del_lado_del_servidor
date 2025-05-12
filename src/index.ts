@@ -6,10 +6,12 @@ import { swaggerConfig } from '../swagger.config';
 import routes from './routes/index';
 import { createServer } from 'http';
 import { Server as SocketIOServer} from 'socket.io';
+import session from 'express-session';
+import passport from 'passport';
+
 
 const app = express();
 const port = process.env.PORT || 5000;
-
 
 //Servidor HTTP manualmente
 const httpServer = createServer(app);
@@ -23,6 +25,22 @@ export const io = new SocketIOServer(httpServer,{
 
 // Middlewares
 app.use(express.json());
+
+// google auth
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'supersecreto',
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.get('',(req,res)=>{
+    res.send('OK')
+})
 
 // Rutas
 app.use('/', routes);
