@@ -14,9 +14,8 @@ const router = Router();
  * @swagger
  * /pagos/checkout:
  *   post:
- *     description: Inicia el proceso de pago para una orden.
- *     tags:
- *       - Pagos
+ *     summary: Iniciar un proceso de pago con Stripe
+ *     tags: [Pagos]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -28,28 +27,30 @@ const router = Router();
  *             properties:
  *               orden_id:
  *                 type: string
- *                 example: "6612f91ee8e9378b48774f44"
- *               metodo_pago:
- *                 type: string
- *                 enum: [tarjeta, paypal]
- *                 example: "tarjeta"
+ *                 example: "663eb63d7f1f8c2d1b8d5d1c"
  *               monto:
  *                 type: number
- *                 example: 129.99
- *             required:
- *               - orden_id
- *               - metodo_pago
- *               - monto
+ *                 example: 499.99
+ *               metodo_pago:
+ *                 type: string
+ *                 example: "stripe"
  *     responses:
  *       201:
- *         description: Pago iniciado correctamente
- *       400:
- *         description: Datos inválidos
- *       401:
- *         description: No autorizado
+ *         description: URL para redirigir al usuario a la plataforma de pago
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 url:
+ *                   type: string
+ *                   example: "https://checkout.stripe.com/pay/cs_test_..."
+ *       404:
+ *         description: Orden no encontrada o no autorizada
  *       500:
  *         description: Error al iniciar el pago
  */
+
 router.post('/checkout', authenticateToken, checkout);
 
 /**

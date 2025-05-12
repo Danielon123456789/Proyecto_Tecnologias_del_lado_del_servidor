@@ -15,67 +15,88 @@ const router = Router();
 /**
  * @swagger
  * /ordenes:
- *   post:
- *     description: Crea una nueva orden a partir de productos seleccionados.
- *     tags:
- *       - Órdenes
+ *   get:
+ *     summary: Obtener todas las órdenes (admin)
+ *     tags: [Órdenes]
  *     security:
  *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               productos:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     producto_id:
- *                       type: string
- *                     cantidad:
- *                       type: integer
- *                     precio_unitario:
- *                       type: number
- *               metodo_pago:
- *                 type: string
- *                 enum: [tarjeta, paypal, efectivo]
- *               punto_encuentro:
- *                 type: string
- *             required:
- *               - productos
- *               - metodo_pago
  *     responses:
- *       201:
- *         description: Orden creada correctamente
- *       400:
- *         description: Datos inválidos
- *       401:
- *         description: No autorizado
- *       500:
- *         description: Error en el servidor
+ *       200:
+ *         description: Lista de todas las órdenes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                   usuario_id:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                       nombre:
+ *                         type: string
+ *                       email:
+ *                         type: string
+ *                   productos_id:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                   total:
+ *                     type: number
+ *                   estado:
+ *                     type: string
+ *                   fecha_compra:
+ *                     type: string
+ *                   metodo_pago:
+ *                     type: string
+ *                   punto_encuentro:
+ *                     type: string
  */
+
 router.post('/', authenticateToken, crearOrden);
 
 /**
  * @swagger
  * /ordenes/usuario:
  *   get:
- *     description: Obtiene las órdenes realizadas por el usuario autenticado.
- *     tags:
- *       - Órdenes
+ *     summary: Obtener las órdenes del usuario autenticado
+ *     tags: [Órdenes]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Lista de órdenes del usuario
- *       401:
- *         description: No autorizado
- *       500:
- *         description: Error en el servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                   usuario_id:
+ *                     type: string
+ *                   productos_id:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                   total:
+ *                     type: number
+ *                   estado:
+ *                     type: string
+ *                   fecha_compra:
+ *                     type: string
+ *                   metodo_pago:
+ *                     type: string
+ *                   punto_encuentro:
+ *                     type: string
  */
+
 router.get('/usuario', authenticateToken, getOrdenesUsuario);
 
 /**
@@ -103,28 +124,50 @@ router.get('/admin', authenticateToken, isAdmin, getTodasLasOrdenes);
  * @swagger
  * /ordenes/{id}:
  *   get:
- *     description: Obtiene una orden por su ID.
- *     tags:
- *       - Órdenes
+ *     summary: Obtener una orden por ID
+ *     tags: [Órdenes]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID de la orden
  *         schema:
  *           type: string
+ *         description: ID de la orden
  *     responses:
  *       200:
- *         description: Detalles de la orden
- *       401:
- *         description: No autorizado
- *       404:
- *         description: Orden no encontrada
- *       500:
- *         description: Error en el servidor
+ *         description: Detalle de la orden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                 usuario_id:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                     nombre:
+ *                       type: string
+ *                 productos_id:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                 total:
+ *                   type: number
+ *                 estado:
+ *                   type: string
+ *                 fecha_compra:
+ *                   type: string
+ *                 metodo_pago:
+ *                   type: string
+ *                 punto_encuentro:
+ *                   type: string
  */
+
 router.get('/:id', authenticateToken, getOrden);
 
 /**

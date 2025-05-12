@@ -1,16 +1,15 @@
 {
-
-    "include" : ["src/**/*.ts","src/types"],
-    "compilerOptions": {
-        "noImplicitAny": true,
-        "typeRoots": ["./src/types", "./node_modules/@types"],
-        "strict": true,
-        "target": "ES2022",
-        "moduleResolution": "nodenext",
-        "module": "NodeNext",
-        "esModuleInterop": true,
-        "outDir": "dist"
-    }
-
-
+  "include": ["src/**/*.ts", "tests/**/*.ts", "src/types"],
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "typeRoots": ["./src/types", "./node_modules/@types"],
+    "strict": true,
+    "target": "ES2022",
+    "moduleResolution": "nodenext",
+    "module": "NodeNext",
+    "esModuleInterop": true,
+    "outDir": "dist",
+    "types": ["jest", "node"]
+  }
 }
+
