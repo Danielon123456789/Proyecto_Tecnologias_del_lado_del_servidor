@@ -1,8 +1,9 @@
 {
 
-    "include" : ["src/**/*.ts"],
+    "include" : ["src/**/*.ts","src/types"],
     "compilerOptions": {
         "noImplicitAny": true,
+        "typeRoots": ["./src/types", "./node_modules/@types"],
         "strict": true,
         "target": "ES2022",
         "moduleResolution": "nodenext",
