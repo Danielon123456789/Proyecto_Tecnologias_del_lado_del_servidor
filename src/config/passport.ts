@@ -47,7 +47,7 @@ passport.use(
 
 
 passport.serializeUser((user: { id: string; email: string; rol: string }, done) => {
-  done(null, user.id); // Solo almacenamos el id (puede ser _id de Mongoose)
+  done(null, user.id); 
 });
 
 passport.deserializeUser(async (id: string, done) => {
@@ -55,10 +55,10 @@ passport.deserializeUser(async (id: string, done) => {
     const user = await usermodel.findById(id);
     
     if (!user) {
-      return done(null, false); // En caso de que no se encuentre el usuario
+      return done(null, false); 
     }
 
-    // Adaptamos el usuario para que tenga el tipo correcto
+    
     const customUser = {
       id: user._id.toString(),
       email: user.email,

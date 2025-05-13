@@ -94,7 +94,10 @@ export const comprar = async (req: IGetUserAuthInfoRequest, res: Response): Prom
     const usuario_id = req.user?.id;
     const { metodo_pago, punto_encuentro } = req.body;
 
-    const carrito = await Carrito.findOne({ usuario_id }).populate('productos.producto');
+    const carrito = await Carrito.findOne({ usuario_id }).populate({
+      path: 'productos.producto',
+      model: 'productos'
+    });
     if (!carrito || carrito.productos.length === 0) {
       res.status(HttpStatus.BAD_REQUEST).json({ message: 'Carrito vacío' });
       return;
@@ -147,6 +150,7 @@ export const comprar = async (req: IGetUserAuthInfoRequest, res: Response): Prom
 
     res.status(HttpStatus.CREATED).json({ message: 'Compra realizada con éxito', orden: ordenGuardada });
   } catch (error) {
+    console.error('ERROR EN COMPRA:', error);
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error al procesar la compra', error });
   }
 };

@@ -16,12 +16,15 @@ export const crearOrden = async (req: IGetUserAuthInfoRequest, res: Response): P
     }
 
     let total = 0;
+    const productos_id = productos.map((item: any) => item.producto_id);
+
     for (const item of productos) {
       total += item.precio_unitario * item.cantidad;
     }
 
     const nuevaOrden = new Orden({
       usuario_id,
+      productos_id,
       total,
       metodo_pago,
       punto_encuentro,
@@ -49,7 +52,10 @@ export const crearOrden = async (req: IGetUserAuthInfoRequest, res: Response): P
 export async function getTodasLasOrdenes(req: IGetUserAuthInfoRequest, res: Response): Promise<void> {
   try {
     const ordenes = await Orden.find().populate('usuario_id', 'nombre email');
-    res.json(ordenes);
+    res.json(ordenes.map(o => ({
+      ...o.toObject(),
+      productos_id: o.productos_id.map(p => p.toString())
+    })));
   } catch (error) {
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error al obtener órdenes', error });
   }
@@ -60,7 +66,10 @@ export async function getOrdenesUsuario(req: IGetUserAuthInfoRequest, res: Respo
   try {
     const usuario_id = req.user?.id;
     const ordenes = await Orden.find({ usuario_id }).sort({ createdAt: -1 });
-    res.json(ordenes);
+    res.json(ordenes.map(o => ({
+      ...o.toObject(),
+      productos_id: o.productos_id.map(p => p.toString())
+    })));
   } catch (error) {
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error al obtener tus órdenes', error });
   }
@@ -77,7 +86,10 @@ export async function getOrden(req: IGetUserAuthInfoRequest, res: Response): Pro
       return;
     }
 
-    res.json(orden);
+    res.json({
+      ...orden.toObject(),
+      productos_id: orden.productos_id.map(p => p.toString())
+    });
   } catch (error) {
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error al obtener orden', error });
   }
@@ -94,7 +106,10 @@ export async function actualizarOrden(req: IGetUserAuthInfoRequest, res: Respons
       return;
     }
 
-    res.json(actualizada);
+    res.json({
+      ...actualizada.toObject(),
+      productos_id: actualizada.productos_id.map(p => p.toString())
+    });
   } catch (error) {
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error al actualizar orden', error });
   }
