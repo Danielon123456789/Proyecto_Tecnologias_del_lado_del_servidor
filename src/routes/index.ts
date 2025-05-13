@@ -26,6 +26,6 @@ router.use('/reportes', reporteRoutes);
 router.use('/carrito', carritoRoutes);
 router.use('/admin', adminRoutes);
 router.use('/files', fileRoutes);
-router.use('/auth', googleRoutes)
+router.use('/auth',googleRoutes);
 
 export default router;

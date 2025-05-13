@@ -12,7 +12,6 @@ import passport from 'passport';
 const app = express();
 const port = process.env.PORT || 5000;
 
-
 //Servidor HTTP manualmente
 const httpServer = createServer(app);
 
