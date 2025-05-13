@@ -11,6 +11,7 @@ import reporteRoutes from './reportes';
 import carritoRoutes from './carrito';
 import adminRoutes from './admin';
 import fileRoutes from './fileRoutes';
+import googleRoutes from './google.routes';
 
 const router = Router();
 
@@ -25,5 +26,6 @@ router.use('/reportes', reporteRoutes);
 router.use('/carrito', carritoRoutes);
 router.use('/admin', adminRoutes);
 router.use('/files', fileRoutes);
+router.use('/auth', googleRoutes)
 
 export default router;

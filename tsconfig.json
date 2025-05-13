@@ -1,7 +1,8 @@
 {
-  "include": ["src/**/*.ts", "tests/**/*.ts"],
+  "include": ["src/**/*.ts", "tests/**/*.ts","src/types/**/*.d.ts"],
   "compilerOptions": {
     "noImplicitAny": true,
+    "typeRoots": ["./src/types", "./node_modules/@types"],
     "strict": true,
     "target": "ES2022",
     "moduleResolution": "nodenext",
