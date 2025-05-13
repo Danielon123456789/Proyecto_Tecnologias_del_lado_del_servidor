@@ -9,7 +9,6 @@ import { Server as SocketIOServer} from 'socket.io';
 import session from 'express-session';
 import passport from 'passport';
 
-
 const app = express();
 const port = process.env.PORT || 5000;
 
