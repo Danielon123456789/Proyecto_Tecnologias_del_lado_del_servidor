@@ -1,5 +1,4 @@
 {
-  "include": ["src/**/*.ts", "tests/**/*.ts","src/types/**/*.d.ts"],
   "compilerOptions": {
     "noImplicitAny": true,
     "typeRoots": ["./src/types", "./node_modules/@types"],
@@ -9,6 +8,11 @@
     "module": "NodeNext",
     "esModuleInterop": true,
     "outDir": "dist",
-    "types": ["jest", "node"]
-  }
+    "types": ["jest", "node"]  
+  },
+  "include": [
+    "src/**/*.ts",
+    "tests/**/*.ts",
+    "src/types/**/*.d.ts"  
+  ]
 }
