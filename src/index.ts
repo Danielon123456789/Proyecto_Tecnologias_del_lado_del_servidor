@@ -4,7 +4,7 @@ import hbs from 'hbs';
 import connectDB from './config/database';
 import swaggerJsDoc from 'swagger-jsdoc';
 import { serve, setup } from 'swagger-ui-express';
-import { swaggerConfig } from '../swagger.config';
+import { swaggerConfig } from './swagger.config';
 import routes from './routes/index';
 import session from 'express-session';
 import passport from 'passport';
