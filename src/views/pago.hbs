@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Simular Pago</title>
+</head>
+<body>
+  <h1>Simulación de Pago con Stripe</h1>
+
+  <form id="formPago">
+    <label>Token JWT:</label><br>
+    <input type="text" name="token" placeholder="Bearer ey..." style="width: 80%;"><br><br>
+
+    <label>ID de Orden:</label><br>
+    <input type="text" name="orden_id" placeholder="663f0e..." style="width: 50%;"><br><br>
+
+    <label>Monto (MXN):</label><br>
+    <input type="number" name="monto" value="499"><br><br>
+
+    <button type="submit">Iniciar Pago</button>
+  </form>
+
+  <script>
+    document.getElementById("formPago").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const form = e.target;
+      const token = form.token.value;
+      const orden_id = form.orden_id.value;
+      const monto = parseFloat(form.monto.value);
+
+      const res = await fetch("/pagos/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token
+        },
+        body: JSON.stringify({ orden_id, monto, metodo_pago: "stripe" })
+      });
+
+      const data = await res.json();
+      if (res.ok && data.sessionUrl) {
+        window.location.href = data.sessionUrl;
+      } else {
+        alert("Error al iniciar el pago: " + data.message);
+        console.error(data);
+      }
+    });
+  </script>
+</body>
+</html>

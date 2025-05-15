@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Pago Exitoso</title>
+</head>
+<body>
+  <h1>¡Gracias por tu compra!</h1>
+  <p>Estamos confirmando tu pago con ID: <strong>{{pagoId}}</strong></p>
+
+  <label for="token">Ingresa tu token JWT para confirmar:</label><br>
+  <input type="text" id="token" style="width: 80%;" placeholder="Bearer ey...">
+  <button onclick="confirmarPago()">Confirmar</button>
+
+  <p id="mensaje" style="margin-top: 20px;"></p>
+
+  <script>
+    async function confirmarPago() {
+      const token = document.getElementById("token").value;
+      const mensaje = document.getElementById("mensaje");
+
+      if (!token) {
+        mensaje.textContent = "Por favor ingresa un token válido.";
+        return;
+      }
+
+      const pagoId = "{{pagoId}}";
+
+      try {
+        const res = await fetch(`/pagos/confirmar/${pagoId}`, {
+          method: 'GET',
+          headers: {
+            Authorization: token
+          }
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          mensaje.textContent = "✅ ¡Pago confirmado exitosamente!";
+        } else {
+          mensaje.textContent = "❌ Error al confirmar el pago: " + (data.message || "Desconocido");
+        }
+      } catch (err) {
+        mensaje

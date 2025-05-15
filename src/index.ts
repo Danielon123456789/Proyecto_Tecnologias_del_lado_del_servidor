@@ -1,31 +1,32 @@
 import express from 'express';
+import path from 'path';
+import hbs from 'hbs';
 import connectDB from './config/database';
 import swaggerJsDoc from 'swagger-jsdoc';
 import { serve, setup } from 'swagger-ui-express';
 import { swaggerConfig } from '../swagger.config';
 import routes from './routes/index';
-import { createServer } from 'http';
-import { Server as SocketIOServer} from 'socket.io';
 import session from 'express-session';
 import passport from 'passport';
+import { createServer } from 'http';
+import { Server as SocketIOServer } from 'socket.io';
 
 const app = express();
-const port = process.env.PORT || 5000;
-
-//Servidor HTTP manualmente
+const port = process.env.PORT || 3000;
 const httpServer = createServer(app);
 
-export const io = new SocketIOServer(httpServer,{
-  cors:{
-    origin: "*",
-    methods: ['GET','POST'],
-  },
-})
+// Socket.io
+export const io = new SocketIOServer(httpServer, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST']
+  }
+});
 
-// Middlewares
+// Middleware
 app.use(express.json());
 
-// google auth
+// Google auth
 app.use(
   session({
     secret: process.env.SESSION_SECRET || 'supersecreto',
@@ -37,33 +38,36 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get('',(req,res)=>{
-    res.send('OK')
-})
+// Configuración de vistas con Handlebars
+app.set('view engine', 'hbs');
+app.set('views', path.join(__dirname, 'views'));
 
-// Rutas
+// Archivos estáticos si los tienes
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Rutas API
 app.use('/', routes);
 
-// Documentación Swagger
+// RUTA DE PRUEBA PARA VISTA DE PAGO
+app.get('/test/pago', (_req, res) => {
+  res.render('pago');
+});
+
+app.get('/pago-exitoso/:id', (req, res) => {
+  res.render('pago-exitoso', { pagoId: req.params.id });
+});
+
+app.get('/pago-cancelado/:id', (req, res) => {
+  res.render('pago-cancelado', { pagoId: req.params.id });
+});
+
+// Swagger
 const swaggerDocs = swaggerJsDoc(swaggerConfig);
 app.use('/swagger', serve, setup(swaggerDocs));
 
-// Conexión a la base de datos y arranque
+// Conexión DB
 connectDB().then(() => {
-  app.listen(port, () => {
+  httpServer.listen(port, () => {
     console.log(`Servidor corriendo en el puerto ${port}`);
   });
-}).catch((error) => {
-  console.error('Error al conectar con MongoDB:', error);
-  process.exit(1);
 });
-
-// Manejar eventos de socket.io
-io.on('connection', (socket) => {
-  console.log('Nuevo cliente conectado:', socket.id);
-
-  socket.on('disconnect', () => {
-    console.log('Cliente desconectado:', socket.id);
-  });
-});
-

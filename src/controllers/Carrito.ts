@@ -10,7 +10,10 @@ import { HttpStatus } from '../types/http-status';
 export const verCarrito = async (req: IGetUserAuthInfoRequest, res: Response): Promise<void> => {
   try {
     const usuario_id = req.user?.id;
-    const carrito = await Carrito.findOne({ usuario_id }).populate('productos.producto');
+    const carrito = await Carrito.findOne({ usuario_id }).populate({
+      path: 'productos.producto',
+      model: 'productos'
+    });
 
     if (!carrito) {
       res.json({ productos: [], total: 0 });
