@@ -96,6 +96,15 @@ export async function confirmarPago(req: IGetUserAuthInfoRequest, res: Response)
         `<li>${producto.titulo} x${detalle.cantidad} - $${detalle.precio_unitario * detalle.cantidad}</li>`
       );
 
+      if (producto.stock !== undefined) {
+        const nuevoStock = producto.stock - detalle.cantidad;
+        if (nuevoStock < 0) {
+          console.warn(`Stock negativo para producto ${producto._id}`);
+        } else {
+          await Producto.findByIdAndUpdate(producto._id, { stock: nuevoStock });
+        }
+      }
+
       const vendedor = await User.findById(producto.usuario_id);
       if (vendedor?.email) {
         await enviarCorreo({
