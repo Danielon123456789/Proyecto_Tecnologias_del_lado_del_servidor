@@ -1,22 +1,19 @@
-import express from 'express';
+import app from './app'; // Importa la app desde el nuevo archivo
 import connectDB from './config/database';
-import swaggerJsDoc from 'swagger-jsdoc';
-import { serve, setup } from 'swagger-ui-express';
-import { swaggerConfig } from '../swagger.config';
-import routes from './routes/index';
 import { createServer } from 'http';
 import { Server as SocketIOServer} from 'socket.io';
 import session from 'express-session';
 import passport from 'passport';
+import { swaggerConfig } from '../swagger.config';
 
-const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
 
-//Servidor HTTP manualmente
+
+// Servidor HTTP manualmente
 const httpServer = createServer(app);
 
-export const io = new SocketIOServer(httpServer,{
-  cors:{
+export const io = new SocketIOServer(httpServer, {
+  cors: {
     origin: "*",
     methods: ['GET','POST'],
   },
@@ -66,4 +63,3 @@ io.on('connection', (socket) => {
     console.log('Cliente desconectado:', socket.id);
   });
 });
-

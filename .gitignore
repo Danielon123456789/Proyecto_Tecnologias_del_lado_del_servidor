@@ -16,3 +16,6 @@ build/
 
 # Archivos de entorno 
 .env
+
+package-lock.json
+package.json
