@@ -1,10 +1,12 @@
+// src/controllers/usuarios.ts
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import usermodel from '../models/User';
 import { IGetUserAuthInfoRequest } from '../types/request';
 import { HttpStatus } from '../types/http-status';
 
-const JWT_SECRET = process.env.JWT_SECRET ?? '';
+// Usar la variable de entorno o un valor predeterminado para pruebas
+const JWT_SECRET = process.env.JWT_SECRET || 'test_secret_key_for_unit_tests';
 
 // Login
 export const login = async (req: Request, res: Response): Promise<void> => {
@@ -24,6 +26,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
     res.json({ token });
   } catch (error) {
+    console.error('Error en login:', error);
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error en el servidor', error });
   }
 };
@@ -44,6 +47,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     res.status(HttpStatus.CREATED).json({ message: 'Usuario registrado correctamente' });
   } catch (error) {
+    console.error('Error en registro:', error);
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error en el servidor', error });
   }
 };
@@ -60,6 +64,7 @@ export async function perfil(req: IGetUserAuthInfoRequest, res: Response): Promi
 
     res.json(user);
   } catch (error) {
+    console.error('Error al obtener perfil:', error);
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error al obtener el perfil', error });
   }
 }
@@ -82,6 +87,7 @@ export async function actualizarPerfil(req: IGetUserAuthInfoRequest, res: Respon
 
     res.json(actualizado);
   } catch (error) {
+    console.error('Error al actualizar perfil:', error);
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error al actualizar perfil', error });
   }
 }
@@ -97,6 +103,7 @@ export async function eliminarCuenta(req: IGetUserAuthInfoRequest, res: Response
 
     res.json({ message: 'Cuenta eliminada correctamente' });
   } catch (error) {
+    console.error('Error al eliminar cuenta:', error);
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error al eliminar cuenta', error });
   }
 }

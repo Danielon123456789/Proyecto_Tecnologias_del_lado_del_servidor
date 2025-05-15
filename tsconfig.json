@@ -2,14 +2,14 @@
 
     "include" : ["src/**/*.ts"],
     "compilerOptions": {
+        "types": ["jest", "node"],
         "noImplicitAny": true,
         "strict": true,
         "target": "ES2022",
         "moduleResolution": "nodenext",
         "module": "NodeNext",
         "esModuleInterop": true,
-        "outDir": "dist"
+        "outDir": "dist",
+         "isolatedModules": true
     }
-
-
 }
