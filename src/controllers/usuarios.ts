@@ -51,7 +51,12 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 // Obtener perfil
 export async function perfil(req: IGetUserAuthInfoRequest, res: Response): Promise<void> {
   try {
-    const user = await usermodel.findById(req.user?.id).select('nombre email rol');
+    if (!req.user?.id) {
+      res.status(HttpStatus.UNAUTHORIZED).json({ message: 'Usuario no autenticado' });
+      return;
+    }
+
+    const user = await usermodel.findById(req.user.id).select('nombre email rol');
 
     if (!user) {
       res.status(HttpStatus.NOT_FOUND).json({ message: 'Usuario no encontrado' });
@@ -67,10 +72,15 @@ export async function perfil(req: IGetUserAuthInfoRequest, res: Response): Promi
 // Actualizar perfil
 export async function actualizarPerfil(req: IGetUserAuthInfoRequest, res: Response): Promise<void> {
   try {
+    if (!req.user?.id) {
+      res.status(HttpStatus.UNAUTHORIZED).json({ message: 'Usuario no autenticado' });
+      return;
+    }
+
     const { nombre, email } = req.body;
 
     const actualizado = await usermodel.findByIdAndUpdate(
-      req.user?.id,
+      req.user.id,
       { nombre, email },
       { new: true }
     ).select('nombre email');
@@ -89,7 +99,12 @@ export async function actualizarPerfil(req: IGetUserAuthInfoRequest, res: Respon
 // Eliminar cuenta
 export async function eliminarCuenta(req: IGetUserAuthInfoRequest, res: Response): Promise<void> {
   try {
-    const eliminado = await usermodel.findByIdAndDelete(req.user?.id);
+    if (!req.user?.id) {
+      res.status(HttpStatus.UNAUTHORIZED).json({ message: 'Usuario no autenticado' });
+      return;
+    }
+
+    const eliminado = await usermodel.findByIdAndDelete(req.user.id);
     if (!eliminado) {
       res.status(HttpStatus.NOT_FOUND).json({ message: 'Usuario no encontrado' });
       return;
