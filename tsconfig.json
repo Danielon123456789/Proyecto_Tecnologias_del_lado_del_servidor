@@ -8,6 +8,7 @@
     "module": "NodeNext",
     "esModuleInterop": true,
     "outDir": "dist",
+    "rootDir": "src",
     "types": ["jest", "node"]  
   },
   "include": [
