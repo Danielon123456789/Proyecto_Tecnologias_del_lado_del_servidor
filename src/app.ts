@@ -2,7 +2,7 @@
 import express from 'express';
 import swaggerJsDoc from 'swagger-jsdoc';
 import { serve, setup } from 'swagger-ui-express';
-import { swaggerConfig } from '../swagger.config';
+import { swaggerConfig } from './swagger.config';
 import routes from './routes/index';
 
 // Crear la aplicación Express

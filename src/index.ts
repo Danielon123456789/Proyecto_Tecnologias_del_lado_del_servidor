@@ -4,7 +4,7 @@ import { createServer } from 'http';
 import { Server as SocketIOServer} from 'socket.io';
 import session from 'express-session';
 import passport from 'passport';
-import { swaggerConfig } from '../swagger.config';
+import { swaggerConfig } from './swagger.config';
 
 const port = process.env.PORT || 3000;
 
