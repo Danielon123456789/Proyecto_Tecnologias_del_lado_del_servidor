@@ -7,13 +7,13 @@
     "module": "NodeNext",
     "esModuleInterop": true,
     "outDir": "dist",
+    "rootDir": "src",
     "types": ["jest", "node"],
     "typeRoots": ["./src/types", "./node_modules/@types"],
     "isolatedModules": true
   },
   "include": [
     "src/**/*.ts",
-    "tests/**/*.ts",
     "src/types/**/*.d.ts"
   ]
 }

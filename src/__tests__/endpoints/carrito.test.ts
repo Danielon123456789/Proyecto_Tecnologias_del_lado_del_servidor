@@ -1,11 +1,11 @@
 // __tests__/endpoints/carrito.test.ts
 import request from 'supertest';
 import mongoose from 'mongoose';
-import app from '../../src/app';
-import User from '../../src/models/User';
-import Producto from '../../src/models/Producto';
-import Carrito from '../../src/models/Carrito';
-import Categoria from '../../src/models/Categoria';
+import app from '../../app';
+import User from '../../models/User';
+import Producto from '../../models/Producto';
+import Carrito from '../../models/Carrito';
+import Categoria from '../../models/Categoria';
 import { createTestToken } from '../setup';
 
 describe('Endpoints de Carrito', () => {

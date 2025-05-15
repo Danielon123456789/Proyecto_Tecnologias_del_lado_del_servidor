@@ -1,7 +1,7 @@
 // __tests__/endpoints/auth.test.ts
 import request from 'supertest';
-import app from '../../src/app';
-import User from '../../src/models/User';
+import app from '../../app';
+import User from '../../models/User';
 
 describe('Endpoints de Autenticación', () => {
   beforeEach(async () => {

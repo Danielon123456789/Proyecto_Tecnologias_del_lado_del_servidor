@@ -4,15 +4,15 @@ import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 
 // Importar los esquemas de modelos explícitamente para asegurar que estén registrados
-import userModel from '../src/models/User';
-import categoriaModel from '../src/models/Categoria';
-import productoModel from '../src/models/Producto';
-import carritoModel from '../src/models/Carrito';
-import ordenModel from '../src/models/Orden';
-import detalleOrdenModel from '../src/models/DetalleOrden';
-import reporteModel from '../src/models/Reporte';
-import pagoModel from '../src/models/Pago';
-import fileModel from '../src/models/File';
+import userModel from '../models/User';
+import categoriaModel from '../models/Categoria';
+import productoModel from '../models/Producto';
+import carritoModel from '../models/Carrito';
+import ordenModel from '../models/Orden';
+import detalleOrdenModel from '../models/DetalleOrden';
+import reporteModel from '../models/Reporte';
+import pagoModel from '../models/Pago';
+import fileModel from '../models/File';
 
 let mongoServer: MongoMemoryServer;
 const JWT_SECRET_TEST = 'test_secret_key_for_unit_tests';

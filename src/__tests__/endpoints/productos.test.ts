@@ -1,10 +1,10 @@
 // Versión corregida de productos.test.ts
 import request from 'supertest';
 import mongoose from 'mongoose';
-import app from '../../src/app';
-import Producto from '../../src/models/Producto';
-import User from '../../src/models/User';
-import Categoria from '../../src/models/Categoria';
+import app from '../../app';
+import Producto from '../../models/Producto';
+import User from '../../models/User';
+import Categoria from '../../models/Categoria';
 import { createTestToken } from '../setup';
 
 describe('Endpoints de Productos', () => {
