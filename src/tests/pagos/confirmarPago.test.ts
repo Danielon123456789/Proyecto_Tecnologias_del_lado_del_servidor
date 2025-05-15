@@ -1,9 +1,9 @@
-import { confirmarPago } from '../../src/controllers/Pagos';
-import * as emailService from '../../src/services/emailService';
-import Pago from '../../src/models/Pago';
-import Orden from '../../src/models/Orden';
-import Producto from '../../src/models/Producto';
-import User from '../../src/models/User';
+import { confirmarPago } from '../../controllers/Pagos';
+import * as emailService from '../../services/emailService';
+import Pago from '../../models/Pago';
+import Orden from '../../models/Orden';
+import Producto from '../../models/Producto';
+import User from '../../models/User';
 import { Request, Response } from 'express';
 
 jest.mock('../../src/services/emailService');
