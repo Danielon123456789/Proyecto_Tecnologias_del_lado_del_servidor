@@ -1,15 +1,11 @@
-// jest.config.js
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  testMatch: ['**/__tests__/**/*.test.(ts|js)', '**/tests/**/*.test.ts'],
-  setupFilesAfterEnv: ['./__tests__/setup.ts'], 
+  testMatch: ['**/src/__tests__/**/*.test.(ts|js)'],  // Actualiza también el patrón de test
+  setupFilesAfterEnv: ['./src/__tests__/setup.ts'],   // Actualiza la ruta de setup
   transform: {
     '^.+\\.ts$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'js', 'json'],
-  moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
-  },
   clearMocks: true,
 };

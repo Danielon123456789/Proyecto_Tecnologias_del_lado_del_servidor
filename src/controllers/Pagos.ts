@@ -1,4 +1,4 @@
-import { io } from '../index'; 
+import { io, getUserSocketId } from '../index'; 
 import { Response } from 'express';
 import Pago from '../models/Pago';
 import Orden from '../models/Orden';
@@ -123,15 +123,40 @@ export async function confirmarPago(req: IGetUserAuthInfoRequest, res: Response)
         });
       }
 
-      io.emit(`nueva-compra-${producto.usuario_id}`, {
-        mensaje: '¡Un usuario ha comprado tu producto!',
-        producto: {
-          id: producto._id,
-          titulo: producto.titulo,
-          precio: producto.precio,
-        },
-        compradorId: pago.usuario_id,
-      });
+      // Notificar al vendedor por socket
+      const vendedorSocketId = getUserSocketId(producto.usuario_id.toString());
+      
+      if (vendedorSocketId) {
+        // Notificar directamente al socket del vendedor
+        io.to(vendedorSocketId).emit('nueva-venta', {
+          mensaje: '¡Un usuario ha comprado tu producto!',
+          producto: {
+            id: producto._id,
+            titulo: producto.titulo,
+            precio: producto.precio,
+            cantidad: detalle.cantidad,
+            total: detalle.precio_unitario * detalle.cantidad
+          },
+          comprador: {
+            id: pago.usuario_id,
+            nombre: comprador?.nombre || 'Usuario'
+          },
+          fecha: new Date()
+        });
+        console.log(`Notificación enviada al vendedor ${producto.usuario_id} por socket`);
+      } else {
+        // Fallback: emitir al canal general por si el cliente se reconecta
+        io.emit(`nueva-compra-${producto.usuario_id}`, {
+          mensaje: '¡Un usuario ha comprado tu producto!',
+          producto: {
+            id: producto._id,
+            titulo: producto.titulo,
+            precio: producto.precio,
+          },
+          compradorId: pago.usuario_id,
+        });
+        console.log(`Vendedor ${producto.usuario_id} no conectado, enviando a canal general`);
+      }
     }
 
     if (comprador?.email) {

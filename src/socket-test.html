@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba de Socket.IO</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .notification {
+            background-color: #f5f5f5;
+            padding: 10px;
+            margin-top: 10px;
+            border-left: 3px solid #1e88e5;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        input {
+            padding: 8px;
+            margin-right: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 250px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Prueba de Socket.IO - Ecommerce ITESO</h1>
+    
+    <div class="container">
+        <h2>Registrar Usuario (Vendedor)</h2>
+        <input type="text" id="userId" placeholder="ID del usuario (vendedor)">
+        <button onclick="registrarUsuario()">Registrar</button>
+        <div id="registroStatus"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Notificaciones recibidas</h2>
+        <div id="notificaciones"></div>
+    </div>
+
+    <!-- Cargar Socket.IO desde CDN -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    
+    <script>
+        // Conectar al servidor de Socket.IO
+        const socket = io('http://localhost:3000');
+        
+        socket.on('connect', () => {
+            document.getElementById('registroStatus').innerHTML = 
+                `<p>Conectado al servidor. Socket ID: ${socket.id}</p>`;
+        });
+        
+        socket.on('disconnect', () => {
+            document.getElementById('registroStatus').innerHTML = 
+                '<p style="color: red;">Desconectado del servidor</p>';
+        });
+        
+        // Función para registrar un usuario (vendedor)
+        function registrarUsuario() {
+            const userId = document.getElementById('userId').value;
+            if (!userId) {
+                alert('Por favor, introduce un ID de usuario');
+                return;
+            }
+            
+            socket.emit('register-user', userId);
+            document.getElementById('registroStatus').innerHTML += 
+                `<p>Usuario ${userId} registrado con Socket ID: ${socket.id}</p>`;
+                
+            // Escuchar notificaciones directas
+            socket.on('nueva-venta', (data) => {
+                console.log('Recibido evento nueva-venta:', data);
+                const notif = document.createElement('div');
+                notif.className = 'notification';
+                notif.innerHTML = `
+                    <h3>¡Has vendido un producto!</h3>
+                    <p><strong>Producto:</strong> ${data.producto.titulo}</p>
+                    <p><strong>Precio:</strong> $${data.producto.precio}</p>
+                    <p><strong>Cantidad:</strong> ${data.producto.cantidad}</p>
+                    <p><strong>Total:</strong> $${data.producto.total}</p>
+                    <p><strong>Comprador:</strong> ${data.comprador.nombre}</p>
+                    <p><strong>Fecha:</strong> ${new Date(data.fecha).toLocaleString()}</p>
+                `;
+                document.getElementById('notificaciones').prepend(notif);
+            });
+            
+            // Escuchar notificaciones por canal
+            socket.on(`nueva-compra-${userId}`, (data) => {
+                console.log(`Recibido evento nueva-compra-${userId}:`, data);
+                const notif = document.createElement('div');
+                notif.className = 'notification';
+                notif.style.borderLeftColor = '#FFA000';
+                notif.innerHTML = `
+                    <h3>¡Has vendido un producto! (canal general)</h3>
+                    <p><strong>Producto:</strong> ${data.producto.titulo}</p>
+                    <p><strong>Precio:</strong> $${data.producto.precio}</p>
+                    <p><strong>Comprador ID:</strong> ${data.compradorId}</p>
+                `;
+                document.getElementById('notificaciones').prepend(notif);
+            });
+        }
+    </script>
+</body>
+</html>
