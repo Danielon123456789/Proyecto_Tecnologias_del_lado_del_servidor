@@ -3,11 +3,17 @@ import connectDB from './config/database';
 import swaggerJsDoc from 'swagger-jsdoc';
 import { serve, setup } from 'swagger-ui-express';
 import { swaggerConfig } from '../swagger.config';
+import path from 'path'
+import { engine } from 'express-handlebars'
+import {join} from 'path'
 import routes from './routes/index';
 import { createServer } from 'http';
 import { Server as SocketIOServer} from 'socket.io';
 import session from 'express-session';
 import passport from 'passport';
+import cors from 'cors';
+
+
 
 
 const app = express();
@@ -23,8 +29,22 @@ export const io = new SocketIOServer(httpServer,{
   },
 })
 
+app.use(cors({
+  origin: '*', // Permite todas las solicitudes, ajusta según tu dominio de frontend
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'], // Métodos HTTP permitidos
+  allowedHeaders: ['Content-Type', 'Authorization'], // Permite el encabezado Authorization
+}));
+
 // Middlewares
 app.use(express.json());
+
+app.use(express.static(path.join(__dirname,'public')))
+
+// handlebars vistas
+app.engine('.handlebars', engine({ extname: '.handlebars' }));
+app.set('view engine', '.handlebars');
+app.set('views', join(__dirname, 'views')); // Ruta absoluta
+
 
 // google auth
 app.use(

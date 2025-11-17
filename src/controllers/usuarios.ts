@@ -64,6 +64,31 @@ export async function perfil(req: IGetUserAuthInfoRequest, res: Response): Promi
   }
 }
 
+
+//ver perfil desde vista
+// Nuevo endpoint para obtener los datos del perfil en JSON
+export async function verPerfilVista(req: IGetUserAuthInfoRequest, res: Response): Promise<void> {
+   try {
+    const user = await usermodel.findById(req.user?.id).select('nombre email profilePictureUrl');
+
+    if (!user) {
+      res.status(404).json({ message: 'Usuario no encontrado' });
+      return;
+    }
+
+    res.json({
+      nombre: user.nombre,
+      email: user.email,
+      profilePictureUrl: user.profilePictureUrl || '/img/default-profile.png'
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener perfil', error });
+  }
+};
+
+
+
+
 // Actualizar perfil
 export async function actualizarPerfil(req: IGetUserAuthInfoRequest, res: Response): Promise<void> {
   try {

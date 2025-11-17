@@ -5,7 +5,8 @@ import {
   perfil,
   actualizarPerfil,
   eliminarCuenta,
-  logout
+  logout,
+  verPerfilVista
 } from '../controllers/usuarios';
 import { authenticateToken } from '../middlewares/auth';
 
@@ -174,6 +175,30 @@ router.get('/perfil', authenticateToken, perfil);
  *         description: Error al actualizar perfil
  */
 router.patch('/perfil', authenticateToken, actualizarPerfil);
+
+/**
+ * @swagger
+ * /auth/perfil/view:
+ *   get:
+ *     description: Muestra la vista del perfil del usuario autenticado.
+ *     tags:
+ *       - Usuarios
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Página de perfil renderizada exitosamente
+ *       401:
+ *         description: No autorizado
+ *       500:
+ *         description: Error al cargar el perfil
+ */
+router.get('/perfil/data', authenticateToken, verPerfilVista);
+
+router.get('/perfil/view', (req, res) => {
+  res.render('perfil'); // sin authenticateToken
+});
+
 
 /**
  * @swagger
