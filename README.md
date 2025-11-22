@@ -3,7 +3,7 @@ Este proyecto incluye pruebas de seguridad, SonarQube, ESLint y GitHub Secret Sc
 
 ## ⚠️ Pruebas de Secret Scanning  
 A continuación se incluyen tokens **falsos pero con formato real** para validar GitHub Secret Scanning.
-ghp_abcdEfghIjklMNopQRstuvWXyz123456789
+ghp_abcdefghijklmnopqrstuvwxyzABCDEF012345
 ### 🔐 GitHub Token (FAKE — SOLO PARA PRUEBA)
-AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
+AWS_ACCESS_KEY_ID=AKIA1234567890ABCD
 AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
