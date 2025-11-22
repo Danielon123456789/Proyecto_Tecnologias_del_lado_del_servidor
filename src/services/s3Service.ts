@@ -6,7 +6,7 @@ const s3 = new S3Client({
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-    sessionToken: process.env.AWS_SESSION_TOKEN!
+    // sessionToken: process.env.AWS_SESSION_TOKEN!
   }
 });
 
@@ -21,7 +21,9 @@ export const uploadFileToS3 = async (file: Express.Multer.File, key: string) => 
   });
 
   await s3.send(uploadCommand);
-  return `https://${BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+  // return `https://${BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+  // Return a signed URL instead of direct URL to avoid access denied errors
+  return await getSignedUrlFromS3(key);
 };
 
 export const uploadUserProfilePicture = async (file: Express.Multer.File, userId: string) => {
@@ -44,9 +46,9 @@ export const deleteFileFromS3 = async (key: string) => {
 };
 
 export const getSignedUrlFromS3 = async (key: string) => {
-    const command = new GetObjectCommand({
-      Bucket: BUCKET_NAME,
-      Key: key
-    });
-    return await getSignedUrl(s3, command, { expiresIn: 3600 });
-  };
+  const command = new GetObjectCommand({
+    Bucket: BUCKET_NAME,
+    Key: key
+  });
+  return await getSignedUrl(s3, command, { expiresIn: 3600 });
+};

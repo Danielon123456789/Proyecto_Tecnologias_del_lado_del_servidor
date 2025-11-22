@@ -133,3 +133,14 @@ export async function productosPorCategoria(req: Request, res: Response): Promis
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error al obtener productos por categoría', error });
   }
 }
+
+// Obtener productos del usuario autenticado
+export async function misProductos(req: IGetUserAuthInfoRequest, res: Response): Promise<void> {
+  try {
+    const usuarioId = req.user?.id;
+    const productos = await Producto.find({ usuario_id: usuarioId });
+    res.json(productos);
+  } catch (error) {
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error al obtener tus productos', error });
+  }
+}

@@ -6,11 +6,31 @@ import {
   editarProducto,
   eliminarProducto,
   productosPorCategoria,
-  buscarProductos
+  buscarProductos,
+  misProductos
 } from '../controllers/Productos';
 import { authenticateToken } from '../middlewares/auth';
 
 const router = Router();
+
+/**
+ * @swagger
+ * /productos/mis-productos:
+ *   get:
+ *     description: Obtiene un listado de los productos del usuario autenticado.
+ *     tags:
+ *       - Productos
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de productos del usuario
+ *       401:
+ *         description: No autorizado
+ *       500:
+ *         description: Error en el servidor
+ */
+router.get('/mis-productos', authenticateToken, misProductos);
 
 /**
  * @swagger
