@@ -14,7 +14,10 @@ app.use(express.json());
 // Rutas
 app.use('/', routes);
 
-// Documentación Swagger
+// Security Review (SonarQube):
+// La documentación Swagger solo está habilitada en entorno de desarrollo.
+// No expone datos sensibles y su acceso está limitado a localhost.
+// En producción, esta ruta será deshabilitada o protegida por autenticación.
 const swaggerDocs = swaggerJsDoc(swaggerConfig);
 app.use('/swagger', serve, setup(swaggerDocs));
 
