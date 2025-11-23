@@ -9,3 +9,4 @@ Los siguientes secretos son **falsos pero con el formato oficial**, utilizados �
 ### 🔐 GitHub Token (FAKE – SOLO PARA PRUEBA)
 AKIAIOSFODNN7EXAMPLE
 ghp_FAKE1234567890abcdefghijklmnopqrstuvwxyz12
+
