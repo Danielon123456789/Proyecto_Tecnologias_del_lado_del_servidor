@@ -1,3 +1,12 @@
-ghp_5T2kl8X9gQvNhws7Fy4BmA2rL8pZ39cK6aUd
-AKIA9T4BmX27FHQ8R9KL
-a8rTzQ9fL7WgH4sK1cP0nX3bR5vJ2mD6yU8oA4pB
+# Proyecto Tecnologías del Lado del Servidor  
+Este proyecto incluye pruebas de seguridad, SonarQube, ESLint y GitHub Secret Scanning.
+
+
+## ⚠️ Pruebas de Secret Scanning  
+Los siguientes secretos son **falsos pero con el formato oficial**, utilizados únicamente para validar que GitHub Secret Scanning funciona correctamente.
+
+
+### 🔐 GitHub Token (FAKE – SOLO PARA PRUEBA)
+
+AKIAIOSFODNN7EXAMPLE
+ghp_FAKE1234567890abcdefghijklmnopqrstuvwxyz12
