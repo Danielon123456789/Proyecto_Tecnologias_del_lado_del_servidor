@@ -1,9 +1,3 @@
-# Proyecto Tecnologías del Lado del Servidor  
-Este proyecto incluye pruebas de seguridad, SonarQube, ESLint y GitHub Secret Scanning.
-
-## ⚠️ Pruebas de Secret Scanning  
-A continuación se incluyen tokens **falsos pero con formato real** para validar GitHub Secret Scanning.
-ghp_abcdefghijklmnopqrstuvwxyzABCDEF012345
-### 🔐 GitHub Token (FAKE — SOLO PARA PRUEBA)
-AWS_ACCESS_KEY_ID=AKIA1234567890ABCD
-AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+ghp_5T2kl8X9gQvNhws7Fy4BmA2rL8pZ39cK6aUd
+AKIA9T4BmX27FHQ8R9KL
+a8rTzQ9fL7WgH4sK1cP0nX3bR5vJ2mD6yU8oA4pB
