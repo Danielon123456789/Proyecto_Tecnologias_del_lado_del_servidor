@@ -3,7 +3,7 @@ name: CI/CD con Seguridad - My-Ecommerce ITESO
 on:
   push:                                       
     branches:
-      - main
+      - pruebas_sast
 
 jobs:
   build:
