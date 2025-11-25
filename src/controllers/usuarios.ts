@@ -77,6 +77,7 @@ export async function verPerfilVista(req: IGetUserAuthInfoRequest, res: Response
     }
 
     res.json({
+      _id: user.id,
       nombre: user.nombre,
       email: user.email,
       profilePictureUrl: user.profilePictureUrl || '/img/default-profile.png'
@@ -85,8 +86,6 @@ export async function verPerfilVista(req: IGetUserAuthInfoRequest, res: Response
     res.status(500).json({ message: 'Error al obtener perfil', error });
   }
 };
-
-
 
 
 // Actualizar perfil

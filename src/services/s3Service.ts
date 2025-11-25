@@ -17,13 +17,12 @@ export const uploadFileToS3 = async (file: Express.Multer.File, key: string) => 
     Bucket: BUCKET_NAME,
     Key: key,
     Body: file.buffer,
-    ContentType: file.mimetype
+    ContentType: file.mimetype,
+    ACL: 'public-read'
   });
 
   await s3.send(uploadCommand);
-  // return `https://${BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
-  // Return a signed URL instead of direct URL to avoid access denied errors
-  return await getSignedUrlFromS3(key);
+  return `https://${BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
 };
 
 export const uploadUserProfilePicture = async (file: Express.Multer.File, userId: string) => {
