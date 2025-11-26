@@ -1,9 +1,7 @@
-import { Request, Response } from 'express';
-import mongoose from 'mongoose';
-import File from '../models/File';
+import { Response } from 'express';
 import User from '../models/User';
 import Product from '../models/Producto';
-import { uploadFileToS3, uploadUserProfilePicture, uploadProductImage, deleteFileFromS3, getSignedUrlFromS3 } from '../services/s3Service';
+import { uploadUserProfilePicture, uploadProductImage, deleteFileFromS3 } from '../services/s3Service';
 import { IGetUserAuthInfoRequest } from '../types/request';
 
 export const uploadProfilePicture = async (req: IGetUserAuthInfoRequest, res: Response): Promise<void> => {

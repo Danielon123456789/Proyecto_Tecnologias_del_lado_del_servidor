@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import { IGetUserAuthInfoRequest } from '../types/request';
 import { HttpStatus} from '../types/http-status'
 

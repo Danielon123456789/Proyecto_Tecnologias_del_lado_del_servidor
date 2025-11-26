@@ -1,5 +1,8 @@
 import nodemailer from 'nodemailer';
 
+// Security Review (SonarQube):
+// nodemailer con Gmail utiliza TLS/SSL por defecto.
+// No se transmiten datos sensibles sin cifrado y las credenciales vienen de variables de entorno.
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {

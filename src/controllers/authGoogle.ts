@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { IGetUserAuthInfoRequest } from '../types/request';
 
 dotenv.config();
 
