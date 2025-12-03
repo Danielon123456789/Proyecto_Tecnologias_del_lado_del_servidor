@@ -13,6 +13,11 @@
   "include": [
     "src/**/*.ts",
     "tests/**/*.ts",
-    "src/types/**/*.d.ts"  
+    "src/types/**/*.d.ts",
+    "swagger.config.ts"  
+  ],
+  "exclude": [
+      "node_modules",
+      "dist"
   ]
 }
