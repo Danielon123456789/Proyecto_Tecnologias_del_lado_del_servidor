@@ -9,8 +9,17 @@ import { HttpStatus } from '../types/http-status';
 // Ver contenido del carrito
 export const verCarrito = async (req: IGetUserAuthInfoRequest, res: Response): Promise<void> => {
   try {
+    console.log("➡️ verCarrito");
+
     const usuario_id = req.user?.id;
-    const carrito = await Carrito.findOne({ usuario_id }).populate('productos.producto');
+
+    console.log("usuario_id:", usuario_id);
+
+    const carrito = await Carrito
+      .findOne({ usuario_id })
+      .populate({ path: 'productos.producto', model: 'productos' });
+
+    console.log("carrito:", carrito);
 
     if (!carrito) {
       res.json({ productos: [], total: 0 });
@@ -18,22 +27,19 @@ export const verCarrito = async (req: IGetUserAuthInfoRequest, res: Response): P
     }
 
     const total = carrito.productos.reduce((acc: number, item: any) => {
-      if (
-        typeof item.producto === 'object' &&
-        item.producto !== null &&
-        'precio' in item.producto
-      ) {
-        const producto = item.producto as unknown as { precio: number };
-        return acc + producto.precio * item.cantidad;
-      }
-      return acc;
+      const prod = item.producto;
+      if (!prod || typeof prod !== "object") return acc;
+      return acc + (prod.precio || 0) * item.cantidad;
     }, 0);
 
     res.json({ productos: carrito.productos, total });
+
   } catch (error) {
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error al obtener carrito', error });
+    console.error("❌ ERROR EN verCarrito:", error);
+    res.status(500).json({ message: 'Error al obtener carrito', error });
   }
 };
+
 
 // Agregar un producto al carrito
 export const agregarAlCarrito = async (req: IGetUserAuthInfoRequest, res: Response): Promise<void> => {
