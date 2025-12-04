@@ -26,7 +26,7 @@ export async function getDetallesPorOrden(req: Request, res: Response): Promise<
   try {
     const { orden_id } = req.params;
 
-    const detalles = await DetalleOrden.find({ orden_id }).populate('producto_id', 'titulo precio descripcion imagenes');
+    const detalles = await DetalleOrden.find({ orden_id }).populate('producto_id', 'titulo precio imageUrl');  
     res.json(detalles);
   } catch (error) {
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error al obtener detalles', error });
