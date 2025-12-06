@@ -115,6 +115,42 @@ export async function actualizarOrden(req: IGetUserAuthInfoRequest, res: Respons
   }
 }
 
+// Marcar orden como entregada
+export async function marcarEntregada(req: IGetUserAuthInfoRequest, res: Response): Promise<void> {
+  try {
+    const { id } = req.params;
+    const orden = await Orden.findById(id);
+
+    if (!orden) {
+      res.status(HttpStatus.NOT_FOUND).json({ message: 'Orden no encontrada' });
+      return;
+    }
+
+    if (orden.estado !== 'pagado') {
+      res.status(HttpStatus.BAD_REQUEST).json({ 
+        message: 'Solo se pueden marcar como entregadas las órdenes pagadas' 
+      });
+      return;
+    }
+
+    const ordenActualizada = await Orden.findByIdAndUpdate(
+      id,
+      { entregado: true },
+      { new: true }
+    );
+
+    res.json({ 
+      message: 'Orden marcada como entregada', 
+      orden: {
+        ...ordenActualizada!.toObject(),
+        productos_id: ordenActualizada!.productos_id.map(p => p.toString())
+      }
+    });
+  } catch (error) {
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error al marcar como entregada', error });
+  }
+}
+
 // Eliminar una orden
 export async function eliminarOrden(req: IGetUserAuthInfoRequest, res: Response): Promise<void> {
   try {

@@ -5,7 +5,8 @@ import {
   getOrdenesUsuario,
   getOrden,
   actualizarOrden,
-  eliminarOrden
+  eliminarOrden,
+  marcarEntregada
 } from '../controllers/Orden';
 import { authenticateToken } from '../middlewares/auth';
 import { isAdmin } from '../middlewares/isadmin';
@@ -167,6 +168,34 @@ router.get('/:id', authenticateToken, getOrden);
  *         description: Error en el servidor
  */
 router.patch('/:id', authenticateToken, actualizarOrden);
+
+/**
+ * @swagger
+ * /ordenes/{id}/entregado:
+ *   patch:
+ *     description: Marca una orden como entregada.
+ *     tags:
+ *       - Órdenes
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de la orden
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Orden marcada como entregada
+ *       401:
+ *         description: No autorizado
+ *       404:
+ *         description: Orden no encontrada
+ *       500:
+ *         description: Error en el servidor
+ */
+router.patch('/:id/entregado', authenticateToken, marcarEntregada);
 
 /**
  * @swagger

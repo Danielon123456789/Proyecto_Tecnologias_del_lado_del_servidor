@@ -5,6 +5,7 @@ const OrdenSchema = new mongoose.Schema({
   productos_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'productos', required: true }],
   total: { type: Number, required: true },
   estado: { type: String, enum: ['pendiente', 'pagado', 'cancelado'], default: 'pendiente' },
+  entregado: { type: Boolean, default: false },  
   fecha_compra: { type: Date, default: Date.now },
   metodo_pago: String,
   punto_encuentro: String
