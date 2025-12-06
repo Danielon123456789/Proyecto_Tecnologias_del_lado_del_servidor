@@ -6,7 +6,8 @@ import {
   getOrden,
   actualizarOrden,
   eliminarOrden,
-  marcarEntregada
+  marcarEntregada,
+  getMisVentas
 } from '../controllers/Orden';
 import { authenticateToken } from '../middlewares/auth';
 import { isAdmin } from '../middlewares/isadmin';
@@ -99,6 +100,71 @@ router.get('/usuario', authenticateToken, getOrdenesUsuario);
  *         description: Error en el servidor
  */
 router.get('/admin', authenticateToken, isAdmin, getTodasLasOrdenes);
+
+
+/**
+ * @swagger
+ * /ordenes/mis-ventas:
+ *   get:
+ *     description: Obtiene las órdenes que contienen productos vendidos por el usuario autenticado.
+ *     tags:
+ *       - Órdenes
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de ventas del usuario
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                   comprador:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                       nombre:
+ *                         type: string
+ *                       email:
+ *                         type: string
+ *                   total:
+ *                     type: number
+ *                   estado:
+ *                     type: string
+ *                     enum: [pendiente, pagado, cancelado]
+ *                   entregado:
+ *                     type: boolean
+ *                   fecha_compra:
+ *                     type: string
+ *                     format: date-time
+ *                   punto_encuentro:
+ *                     type: string
+ *                   productos:
+ *                     type: array
+ *                     items:
+ *                       type: object
+ *                       properties:
+ *                         _id:
+ *                           type: string
+ *                         producto:
+ *                           type: object
+ *                         cantidad:
+ *                           type: integer
+ *                         precio_unitario:
+ *                           type: number
+ *                         subtotal:
+ *                           type: number
+ *       401:
+ *         description: No autorizado
+ *       500:
+ *         description: Error en el servidor
+ */
+router.get('/mis-ventas', authenticateToken, getMisVentas);
 
 /**
  * @swagger

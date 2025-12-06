@@ -3,6 +3,8 @@ import Orden from '../models/Orden';
 import DetalleOrden from '../models/DetalleOrden';
 import { HttpStatus } from '../types/http-status';
 import { IGetUserAuthInfoRequest } from '../types/request';
+import Producto from '../models/Producto';
+
 
 // Crear una orden
 export const crearOrden = async (req: IGetUserAuthInfoRequest, res: Response): Promise<void> => {
@@ -148,6 +150,82 @@ export async function marcarEntregada(req: IGetUserAuthInfoRequest, res: Respons
     });
   } catch (error) {
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error al marcar como entregada', error });
+  }
+}
+// Obtener ventas del usuario (productos que vendí)
+export async function getMisVentas(req: IGetUserAuthInfoRequest, res: Response): Promise<void> {
+  try {
+    const vendedor_id = req.user?.id;
+    console.log('=== getMisVentas ===');
+    console.log('vendedor_id:', vendedor_id);
+
+    // 1. Buscar todos los productos del vendedor
+    const misProductos = await Producto.find({ usuario_id: vendedor_id }).select('_id');
+    console.log('misProductos:', misProductos);
+    
+    const productosIds = misProductos.map(p => p._id);
+    console.log('productosIds:', productosIds);
+
+    if (productosIds.length === 0) {
+      console.log('No hay productos, retornando []');
+      res.json([]);
+      return;
+    }
+
+    // 2. Buscar detalles de orden que contengan mis productos
+    const detalles = await DetalleOrden.find({
+      producto_id: { $in: productosIds }
+    })
+    .populate({
+      path: 'orden_id',
+      populate: { path: 'usuario_id', select: 'nombre email' }
+    })
+    .populate('producto_id');
+    
+    console.log('detalles encontrados:', detalles.length);
+
+    // 3. Agrupar por orden
+    const ordenesMap = new Map();
+
+    for (const detalle of detalles) {
+      const orden = detalle.orden_id as any;
+      if (!orden) continue;
+
+      const ordenId = orden._id.toString();
+
+      if (!ordenesMap.has(ordenId)) {
+        ordenesMap.set(ordenId, {
+          _id: orden._id,
+          comprador: orden.usuario_id,
+          total: 0,
+          estado: orden.estado,
+          entregado: orden.entregado,
+          fecha_compra: orden.fecha_compra,
+          metodo_pago: orden.metodo_pago,
+          punto_encuentro: orden.punto_encuentro,
+          productos: []
+        });
+      }
+
+      const ordenData = ordenesMap.get(ordenId);
+      ordenData.productos.push({
+        _id: detalle._id,
+        producto: detalle.producto_id,
+        cantidad: detalle.cantidad,
+        precio_unitario: detalle.precio_unitario,
+        subtotal: detalle.cantidad * detalle.precio_unitario
+      });
+      ordenData.total += detalle.cantidad * detalle.precio_unitario;
+    }
+
+    const ventas = Array.from(ordenesMap.values());
+    ventas.sort((a, b) => new Date(b.fecha_compra).getTime() - new Date(a.fecha_compra).getTime());
+
+    console.log('ventas a retornar:', ventas.length);
+    res.json(ventas);
+  } catch (error) {
+    console.error('ERROR en getMisVentas:', error);  // ← Esto mostrará el error real
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error al obtener ventas', error });
   }
 }
 
