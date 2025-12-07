@@ -98,66 +98,60 @@ export const eliminarDelCarrito = async (req: IGetUserAuthInfoRequest, res: Resp
 export const comprar = async (req: IGetUserAuthInfoRequest, res: Response): Promise<void> => {
   try {
     const usuario_id = req.user?.id;
-    const { metodo_pago, punto_encuentro } = req.body;
+    const carrito = await Carrito.findOne({ usuario_id }).populate('productos.producto');
 
-    const carrito = await Carrito.findOne({ usuario_id }).populate({
-      path: 'productos.producto',
-      model: 'productos'
-    });
     if (!carrito || carrito.productos.length === 0) {
-      res.status(HttpStatus.BAD_REQUEST).json({ message: 'Carrito vacío' });
+      res.status(400).json({ message: 'El carrito está vacío' });
       return;
     }
 
-    let total = 0;
-
+    // 1. Verificar stock disponible ANTES de crear la orden
     for (const item of carrito.productos) {
-      if (
-        typeof item.producto === 'object' &&
-        item.producto !== null &&
-        'precio' in item.producto
-      ) {
-        const producto = item.producto as unknown as { precio: number };
-        total += producto.precio * item.cantidad;
+      const producto = await Producto.findById(item.producto);
+      if (!producto) {
+        res.status(404).json({ message: `Producto ${item.producto} no encontrado` });
+        return;
       }
-    }
-
-    const orden = new Orden({
-      usuario_id,
-      total,
-      metodo_pago,
-      punto_encuentro,
-      estado: 'pendiente',
-    });
-
-    const ordenGuardada = await orden.save();
-
-    for (const item of carrito.productos) {
-      if (
-        typeof item.producto === 'object' &&
-        item.producto !== null &&
-        'precio' in item.producto &&
-        '_id' in item.producto
-      ) {
-        const producto = item.producto as unknown as { _id: string; precio: number };
-        const detalle = new DetalleOrden({
-          orden_id: ordenGuardada._id,
-          producto_id: producto._id,
-          cantidad: item.cantidad,
-          precio_unitario: producto.precio,
+      if (producto.stock < item.cantidad) {
+        res.status(400).json({ 
+          message: `Stock insuficiente para ${producto.titulo}. Disponible: ${producto.stock}, solicitado: ${item.cantidad}` 
         });
-
-        await detalle.save();
+        return;
       }
     }
 
+    // 2. Crear la orden
+    const nuevaOrden = new Orden({
+      usuario_id,
+      productos: carrito.productos,
+      total: carrito.productos.reduce((acc: number, item: any) => 
+        acc + (item.producto.precio * item.cantidad), 0
+      ),
+      estado: 'pendiente'
+    });
+    await nuevaOrden.save();
+
+    // 3. Disminuir el stock de cada producto y cambiar estado si es necesario
+    for (const item of carrito.productos) {
+      const producto = await Producto.findById(item.producto?._id);
+      const nuevoStock = producto!.stock - item.cantidad;
+      
+      await Producto.findByIdAndUpdate(
+        item.producto?._id,
+        { 
+          stock: nuevoStock,
+          estado: nuevoStock <= 0 ? 'inactivo' : 'activo'
+        }
+      );
+    }
+
+    // 4. Vaciar el carrito
     carrito.productos = [];
     await carrito.save();
 
-    res.status(HttpStatus.CREATED).json({ message: 'Compra realizada con éxito', orden: ordenGuardada });
+    res.status(201).json({ message: 'Compra realizada', orden: nuevaOrden });
   } catch (error) {
-    console.error('ERROR EN COMPRA:', error);
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error al procesar la compra', error });
+    res.status(500).json({ message: 'Error al realizar compra', error });
   }
 };
 
