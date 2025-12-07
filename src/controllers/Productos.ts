@@ -6,7 +6,7 @@ import { IGetUserAuthInfoRequest } from '../types/request';
 // Obtener todos los productos
 export async function getProductos(req: Request, res: Response): Promise<void> {
   try {
-    const productos = await Producto.find()
+    const productos = await Producto.find({ estado: 'activo' })
       .populate('usuario_id', 'nombre')
       .populate('categoria_id', 'nombre');
 
@@ -97,7 +97,7 @@ export async function eliminarProducto(req: Request, res: Response): Promise<voi
 export async function buscarProductos(req: Request, res: Response): Promise<void> {
   try {
     const { q, min, max, categoria } = req.query;
-    const filtro: any = {};
+    const filtro: any = { estado: 'activo' }; // Agregar esta línea
 
     if (q) {
       filtro.$or = [
@@ -127,7 +127,13 @@ export async function buscarProductos(req: Request, res: Response): Promise<void
 export async function productosPorCategoria(req: Request, res: Response): Promise<void> {
   try {
     const { categoria } = req.params;
-    const productos = await Producto.find({ categoria_id: categoria });
+    const productos = await Producto.find({ 
+      categoria_id: categoria,
+      estado: 'activo' 
+    })
+      .populate('usuario_id', 'nombre')
+      .populate('categoria_id', 'nombre');
+
     res.json(productos);
   } catch (error) {
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error al obtener productos por categoría', error });
