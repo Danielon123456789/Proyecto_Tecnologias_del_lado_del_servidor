@@ -35,7 +35,7 @@ export const verCarrito = async (req: IGetUserAuthInfoRequest, res: Response): P
     res.json({ productos: carrito.productos, total });
 
   } catch (error) {
-    console.error("❌ ERROR EN verCarrito:", error);
+    console.error("ERROR EN verCarrito:", error);
     res.status(500).json({ message: 'Error al obtener carrito', error });
   }
 };

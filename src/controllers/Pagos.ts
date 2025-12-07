@@ -7,7 +7,6 @@ import { HttpStatus } from '../types/http-status';
 import { IGetUserAuthInfoRequest } from '../types/request';
 import { enviarCorreo } from '../services/emailService';
 import User from '../models/User';
-import Producto from '../models/Producto';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
@@ -85,6 +84,12 @@ export async function confirmarPago(req: IGetUserAuthInfoRequest, res: Response)
       return;
     }
 
+    await Orden.findByIdAndUpdate(pago.orden_id, { estado: 'pagado' });
+
+    // ✅ Responder INMEDIATAMENTE al frontend
+    res.json({ message: 'Pago confirmado', pago });
+
+    // ✅ Todo lo de abajo se ejecuta en background (sin bloquear)
     const comprador = await User.findById(pago.usuario_id);
     const detalles = await DetalleOrden.find({ orden_id: orden._id }).populate('producto_id');
     const productosComprados: string[] = [];
@@ -98,7 +103,7 @@ export async function confirmarPago(req: IGetUserAuthInfoRequest, res: Response)
 
       const vendedor = await User.findById(producto.usuario_id);
       if (vendedor?.email) {
-        await enviarCorreo({
+        enviarCorreo({
           destinatario: vendedor.email,
           asunto: '¡Has vendido un producto!',
           cuerpoHtml: `
@@ -111,7 +116,7 @@ export async function confirmarPago(req: IGetUserAuthInfoRequest, res: Response)
             <p>Gracias por utilizar nuestra plataforma.</p>
             <p><em>Ecommerce ITESO</em></p>
           `,
-        });
+        }).catch(err => console.log('Error enviando correo a vendedor:', err));
       }
 
       io.emit(`nueva-compra-${producto.usuario_id}`, {
@@ -126,7 +131,7 @@ export async function confirmarPago(req: IGetUserAuthInfoRequest, res: Response)
     }
 
     if (comprador?.email) {
-      await enviarCorreo({
+      enviarCorreo({
         destinatario: comprador.email,
         asunto: 'Confirmación de tu compra - Ecommerce ITESO',
         cuerpoHtml: `
@@ -142,13 +147,9 @@ export async function confirmarPago(req: IGetUserAuthInfoRequest, res: Response)
           <p>Gracias por confiar en nuestra plataforma.</p>
           <p><em>Ecommerce ITESO</em></p>
         `,
-      });
+      }).catch(err => console.log('Error enviando correo a comprador:', err));
     }
 
-
-    await Orden.findByIdAndUpdate(pago.orden_id, { estado: 'pagado' });
-
-    res.json({ message: 'Pago confirmado', pago });
   } catch (error) {
     console.error('Error al confirmar pago:', error);
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error al confirmar pago', error });
