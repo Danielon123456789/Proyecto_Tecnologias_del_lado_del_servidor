@@ -83,8 +83,10 @@ connectDB().then(() => {
 io.on('connection', (socket) => {
   console.log('Nuevo cliente conectado:', socket.id);
 
-  socket.on('disconnect', () => {
-    console.log('Cliente desconectado:', socket.id);
+  socket.on('newOrder', (orden) => {
+    console.log('Nueva orden recibida:', orden._id);
+    // Emitir a todos los clientes conectados
+    io.emit('newOrder', orden);
   });
 });
 
