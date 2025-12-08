@@ -71,7 +71,7 @@ app.use('/swagger', serve, setup(swaggerDocs));
 
 // Conexión a la base de datos y arranque
 connectDB().then(() => {
-  app.listen(port, () => {
+  httpServer.listen(port, () => {
     console.log(`Servidor corriendo en el puerto ${port}`);
   });
 }).catch((error) => {
@@ -87,6 +87,10 @@ io.on('connection', (socket) => {
     console.log('Nueva orden recibida:', orden._id);
     // Emitir a todos los clientes conectados
     io.emit('newOrder', orden);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Cliente desconectado:', socket.id);
   });
 });
 
