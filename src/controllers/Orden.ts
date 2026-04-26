@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import Orden from '../models/Orden';
 import DetalleOrden from '../models/DetalleOrden';
+import Producto from '../models/Producto';
 import { HttpStatus } from '../types/http-status';
 import { IGetUserAuthInfoRequest } from '../types/request';
 
@@ -72,6 +73,28 @@ export async function getOrdenesUsuario(req: IGetUserAuthInfoRequest, res: Respo
     })));
   } catch (error) {
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error al obtener tus órdenes', error });
+  }
+}
+
+// Obtener ventas del vendedor autenticado (órdenes que contienen sus productos)
+export async function getMisVentas(req: IGetUserAuthInfoRequest, res: Response): Promise<void> {
+  try {
+    const usuario_id = req.user?.id;
+    // Buscar los productos que pertenecen al vendedor
+    const misProductos = await Producto.find({ usuario_id }).select('_id');
+    const misProductosIds = misProductos.map(p => p._id);
+
+    // Buscar órdenes que contengan alguno de esos productos
+    const ordenes = await Orden.find({ productos_id: { $in: misProductosIds } })
+      .populate('usuario_id', 'nombre email')
+      .sort({ fecha_compra: -1 });
+
+    res.json(ordenes.map(o => ({
+      ...o.toObject(),
+      productos_id: o.productos_id.map(p => p.toString())
+    })));
+  } catch (error) {
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error al obtener tus ventas', error });
   }
 }
 

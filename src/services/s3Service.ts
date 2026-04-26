@@ -13,6 +13,7 @@ const s3 = new S3Client({
 const BUCKET_NAME = process.env.AWS_BUCKET_NAME!;
 
 export const uploadFileToS3 = async (file: Express.Multer.File, key: string) => {
+  console.log('>>> BUCKET_NAME en uso:', BUCKET_NAME, '| REGION:', process.env.AWS_REGION);
   const uploadCommand = new PutObjectCommand({
     Bucket: BUCKET_NAME,
     Key: key,

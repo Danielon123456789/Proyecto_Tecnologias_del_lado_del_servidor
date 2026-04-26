@@ -5,7 +5,8 @@ import {
   getOrdenesUsuario,
   getOrden,
   actualizarOrden,
-  eliminarOrden
+  eliminarOrden,
+  getMisVentas
 } from '../controllers/Orden';
 import { authenticateToken } from '../middlewares/auth';
 import { isAdmin } from '../middlewares/isadmin';
@@ -98,6 +99,7 @@ router.post('/', authenticateToken, crearOrden);
  */
 
 router.get('/usuario', authenticateToken, getOrdenesUsuario);
+router.get('/mis-ventas', authenticateToken, getMisVentas);
 
 /**
  * @swagger

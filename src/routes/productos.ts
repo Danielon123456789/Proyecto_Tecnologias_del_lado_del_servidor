@@ -6,7 +6,8 @@ import {
   editarProducto,
   eliminarProducto,
   productosPorCategoria,
-  buscarProductos
+  buscarProductos,
+  getMisProductos
 } from '../controllers/Productos';
 import { authenticateToken } from '../middlewares/auth';
 
@@ -60,6 +61,7 @@ router.get('/', getProductos);
  *         description: Error en el servidor
  */
 router.get('/busqueda', buscarProductos);
+router.get('/mis-productos', authenticateToken, getMisProductos);
 
 /**
  * @swagger

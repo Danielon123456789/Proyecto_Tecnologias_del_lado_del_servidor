@@ -123,6 +123,19 @@ export async function buscarProductos(req: Request, res: Response): Promise<void
   }
 }
 
+// Obtener productos del usuario autenticado
+export async function getMisProductos(req: IGetUserAuthInfoRequest, res: Response): Promise<void> {
+  try {
+    const usuario_id = req.user?.id;
+    const productos = await Producto.find({ usuario_id })
+      .populate('usuario_id', 'nombre')
+      .populate('categoria_id', 'nombre');
+    res.json(productos);
+  } catch (error) {
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error al obtener mis productos', error });
+  }
+}
+
 // Obtener productos por categoría
 export async function productosPorCategoria(req: Request, res: Response): Promise<void> {
   try {
