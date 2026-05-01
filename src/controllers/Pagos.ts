@@ -6,6 +6,7 @@ import DetalleOrden from '../models/DetalleOrden'
 import { HttpStatus } from '../types/http-status';
 import { IGetUserAuthInfoRequest } from '../types/request';
 import { enviarCorreo } from '../services/emailService';
+import { publicarVentaSNS } from '../services/snsService';
 import User from '../models/User';
 import Producto from '../models/Producto';
 import Stripe from 'stripe';
@@ -107,20 +108,47 @@ export async function confirmarPago(req: IGetUserAuthInfoRequest, res: Response)
 
       const vendedor = await User.findById(producto.usuario_id);
       if (vendedor?.email) {
-        await enviarCorreo({
-          destinatario: vendedor.email,
-          asunto: '¡Has vendido un producto!',
-          cuerpoHtml: `
-            <h2>Notificación de Venta - Ecommerce ITESO</h2>
-            <p>Estimado/a ${vendedor.nombre || 'vendedor'},</p>
-            <p>Te informamos que has vendido el producto <strong>${producto.titulo}</strong>.</p>
-            <p><strong>Cantidad:</strong> ${detalle.cantidad}</p>
-            <p><strong>Total:</strong> $${detalle.precio_unitario * detalle.cantidad}</p>
-            <p><strong>Comprador:</strong> ${comprador?.email}</p>
-            <p>Gracias por utilizar nuestra plataforma.</p>
-            <p><em>Ecommerce ITESO</em></p>
-          `,
+        try {
+          await enviarCorreo({
+            destinatario: vendedor.email,
+            asunto: '¡Has vendido un producto!',
+            cuerpoHtml: `
+              <h2>Notificación de Venta - Ecommerce ITESO</h2>
+              <p>Estimado/a ${vendedor.nombre || 'vendedor'},</p>
+              <p>Te informamos que has vendido el producto <strong>${producto.titulo}</strong>.</p>
+              <p><strong>Cantidad:</strong> ${detalle.cantidad}</p>
+              <p><strong>Total:</strong> $${detalle.precio_unitario * detalle.cantidad}</p>
+              <p><strong>Comprador:</strong> ${comprador?.email}</p>
+              <p>Gracias por utilizar nuestra plataforma.</p>
+              <p><em>Ecommerce ITESO</em></p>
+            `,
+          });
+        } catch (error) {
+          console.error(`Error al enviar correo al vendedor ${vendedor._id}:`, error);
+        }
+      }
+
+      try {
+        await publicarVentaSNS({
+          sellerId: producto.usuario_id.toString(),
+          sellerName: vendedor?.nombre || 'vendedor',
+          sellerEmail: vendedor?.email,
+          buyerId: pago.usuario_id.toString(),
+          buyerName: comprador?.nombre || 'Usuario',
+          buyerEmail: comprador?.email,
+          paymentId: pago._id.toString(),
+          orderId: orden._id.toString(),
+          meetingPoint: orden.punto_encuentro,
+          product: {
+            id: producto._id.toString(),
+            title: producto.titulo,
+            price: producto.precio,
+            quantity: detalle.cantidad,
+            total: detalle.precio_unitario * detalle.cantidad,
+          },
         });
+      } catch (error) {
+        console.error(`Error al publicar notificación SNS para el vendedor ${producto.usuario_id}:`, error);
       }
 
       // Notificar al vendedor por socket
@@ -160,23 +188,27 @@ export async function confirmarPago(req: IGetUserAuthInfoRequest, res: Response)
     }
 
     if (comprador?.email) {
-      await enviarCorreo({
-        destinatario: comprador.email,
-        asunto: 'Confirmación de tu compra - Ecommerce ITESO',
-        cuerpoHtml: `
-          <h2>Gracias por tu compra en Ecommerce ITESO</h2>
-          <p>Estimado/a ${comprador.nombre || 'cliente'},</p>
-          <p>Has realizado una compra con éxito. Aquí tienes los detalles:</p>
-          <ul>
-            ${productosComprados.join('\n')}
-          </ul>
-          <p><strong>Total pagado:</strong> $${pago.monto}</p>
-          <p><strong>Fecha y hora de pago:</strong> ${new Date(pago.fecha_pago).toLocaleString('es-MX')}</p>
-          ${orden.punto_encuentro ? `<p><strong>Punto de encuentro:</strong> ${orden.punto_encuentro}</p>` : ''}
-          <p>Gracias por confiar en nuestra plataforma.</p>
-          <p><em>Ecommerce ITESO</em></p>
-        `,
-      });
+      try {
+        await enviarCorreo({
+          destinatario: comprador.email,
+          asunto: 'Confirmación de tu compra - Ecommerce ITESO',
+          cuerpoHtml: `
+            <h2>Gracias por tu compra en Ecommerce ITESO</h2>
+            <p>Estimado/a ${comprador.nombre || 'cliente'},</p>
+            <p>Has realizado una compra con éxito. Aquí tienes los detalles:</p>
+            <ul>
+              ${productosComprados.join('\n')}
+            </ul>
+            <p><strong>Total pagado:</strong> $${pago.monto}</p>
+            <p><strong>Fecha y hora de pago:</strong> ${new Date(pago.fecha_pago).toLocaleString('es-MX')}</p>
+            ${orden.punto_encuentro ? `<p><strong>Punto de encuentro:</strong> ${orden.punto_encuentro}</p>` : ''}
+            <p>Gracias por confiar en nuestra plataforma.</p>
+            <p><em>Ecommerce ITESO</em></p>
+          `,
+        });
+      } catch (error) {
+        console.error(`Error al enviar correo al comprador ${comprador._id}:`, error);
+      }
     }
 
 

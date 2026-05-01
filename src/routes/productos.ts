@@ -8,7 +8,7 @@ import {
   productosPorCategoria,
   buscarProductos,
   getMisProductos
-} from '../controllers/productos';
+} from '../controllers/Productos';
 import { authenticateToken } from '../middlewares/auth';
 
 const router = Router();
