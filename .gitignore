@@ -18,3 +18,13 @@ build/
 .env
 
 package-lock.json
+node_modules
+
+# Lambda deployment
+*.zip
+temp-lambda/
+temp-lambda-clean/
+lambda-package/
+
+# Test artifacts
+*.log
