@@ -1,0 +1,30 @@
+version: '3.8'
+name: cloud-ec2-app
+
+services:
+  # This builds YOUR Node.js app using the Dockerfile in the current folder
+  backend:
+    container_name: cloud-backend
+    image: cloud-backend-img  # Explicitly names the image
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGO_URI=mongodb://database:27017/iteso_db
+    depends_on:
+      - database
+    env_file:
+      - .env
+
+  # This pulls the OFFICIAL MongoDB image (no Dockerfile needed for this)
+  database:
+    container_name: cloud-database
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+# This is the "Magic" that saves your data on the EC2 hard drive
+volumes:
+  mongo-data:

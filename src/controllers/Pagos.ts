@@ -11,7 +11,7 @@ import User from '../models/User';
 import Producto from '../models/Producto';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+let stripe: Stripe | null = null;
 
 // Iniciar proceso de pago
 export async function checkout(req: IGetUserAuthInfoRequest, res: Response): Promise<void> {
@@ -35,8 +35,20 @@ export async function checkout(req: IGetUserAuthInfoRequest, res: Response): Pro
 
     await pago.save();
 
+    if (process.env.STRIPE_SECRET_KEY) {
+      stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+    } else {
+      console.warn("WARNING: Stripe credentials missing. Payment features will be disabled.");
+    }
+
+    if (!stripe) {
+      res.status(503).json({ 
+        error: 'Payment service currently unavailable. Missing configuration.' 
+      });
+    }
+
     // Crear sesión de pago de Stripe
-    const session = await stripe.checkout.sessions.create({
+    const session = await stripe!.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
         {

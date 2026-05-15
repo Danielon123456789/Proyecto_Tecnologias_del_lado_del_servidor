@@ -7,6 +7,7 @@ import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 
 const port = process.env.PORT || 3000;
+const host = process.env.HOST || '0.0.0.0';
 const httpServer = createServer(app);
 
 export const io = new SocketIOServer(httpServer, {
@@ -22,8 +23,8 @@ const userConnections = new Map<string, string>();
 // Solo inicia el servidor si no estamos en modo de prueba
 if (process.env.NODE_ENV !== 'test') {
   connectDB().then(() => {
-    httpServer.listen(port, () => {
-      console.log(`Servidor corriendo en el puerto ${port}`);
+    httpServer.listen(Number(port), host, () => {
+      console.log(`Server running at http://${host}:${port}/`);
     });
   }).catch((error) => {
     console.error('Error al conectar con MongoDB:', error);

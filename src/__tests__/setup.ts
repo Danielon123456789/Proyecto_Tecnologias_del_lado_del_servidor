@@ -2,6 +2,12 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const JWT_SECRET_TEST = 'test_secret_key_for_unit_tests';
+process.env.JWT_SECRET = JWT_SECRET_TEST;
 
 // Importar los esquemas de modelos explícitamente para asegurar que estén registrados
 import userModel from '../models/User';
@@ -15,12 +21,10 @@ import pagoModel from '../models/Pago';
 import fileModel from '../models/File';
 
 let mongoServer: MongoMemoryServer;
-const JWT_SECRET_TEST = 'test_secret_key_for_unit_tests';
 
 // Configurar antes de todas las pruebas
 beforeAll(async () => {
   // Establecer el JWT_SECRET para pruebas
-  process.env.JWT_SECRET = JWT_SECRET_TEST;
 
   // Cerrar cualquier conexión existente primero
   if (mongoose.connection.readyState !== 0) {
@@ -63,9 +67,13 @@ afterAll(async () => {
 
 // Función de ayuda para crear token de prueba
 export const createTestToken = (userId: string, rol: string = 'usuario') => {
+  // DON'T use a hardcoded string here. 
+  // Use the environment variable so it matches what the middleware sees.
+  const secret = process.env.JWT_SECRET || 'test_secret_key_for_unit_tests';
+
   return jwt.sign(
     { id: userId, email: 'test@iteso.mx', rol }, 
-    JWT_SECRET_TEST, 
+    secret, 
     { expiresIn: '1h' }
   );
 };
