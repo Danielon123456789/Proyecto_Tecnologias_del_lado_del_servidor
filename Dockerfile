@@ -1,7 +1,9 @@
 FROM node:20-slim
 
-RUN apt-get update && apt-get install -y procps && rm -rf /var/lib/apt/lists/*
-
+# Install system dependencies for MongoDB and process management
+RUN apt-get update && \
+    apt-get install -y libcurl4 procps && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
