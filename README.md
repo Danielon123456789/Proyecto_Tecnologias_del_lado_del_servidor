@@ -145,3 +145,53 @@ El código fuente está limpio de credenciales y listo para Git.
 
 **Desarrollado por**: E-TESO Team
 **Año**: 2026
+
+
+🛠 CI/CD y Contenedores
+GitHub Actions (.github/workflows/deploy.yml)
+
+El flujo se dispara al realizar un push a las ramas main o nube-mongoDb.
+
+    Build: Compila el código TypeScript.
+
+    Dockerize: Construye la imagen usando node:20-slim e instala libcurl4 y procps.
+
+    ECR Push: Autentica y sube la imagen a:
+    541890559721.dkr.ecr.us-east-1.amazonaws.com/reuseiteso-backend:latest
+
+Despliegue en EC2
+
+El servidor EC2 utiliza docker-compose.yml para orquestar los servicios.
+
+Comandos de actualización:
+Bash
+
+cd ~/app
+docker-compose pull
+docker-compose up -d
+
+Configuración de docker-compose.yml:
+YAML
+
+services:
+  backend:
+    image: [541890559721.dkr.ecr.us-east-1.amazonaws.com/reuseiteso-backend:latest](https://541890559721.dkr.ecr.us-east-1.amazonaws.com/reuseiteso-backend:latest)
+    container_name: reuseiteso-backend
+    restart: unless-stopped
+    env_file: .env
+    networks:
+      - eteso-network
+
+🧪 Pruebas (Tests)
+
+Los tests e2e utilizan mongodb-memory-server. Requiere libcurl4 en el entorno de ejecución (incluido en la imagen de producción).
+Bash
+
+# Ejecutar suite completa
+npm test
+
+# Test de flujo crítico (Pagos + SNS)
+npm test -- --runInBand src/__tests__/endpoints/pagos.test.ts
+
+# Ejecutar tests dentro del contenedor EC2
+docker exec reuseiteso-backend npm test
