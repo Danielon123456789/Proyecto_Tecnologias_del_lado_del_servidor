@@ -5,7 +5,7 @@ services:
   # This builds YOUR Node.js app using the Dockerfile in the current folder
   backend:
     container_name: cloud-backend
-    image: cloud-backend-img  # Explicitly names the image
+    image: 541890559721.dkr.ecr.us-east-1.amazonaws.com/reuseiteso-backend:latest
     build: .
     ports:
       - "3000:3000"
